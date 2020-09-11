@@ -10,67 +10,107 @@ When we use the term Allegro we mean Allegro 5.
 
 ## Create the Projct
 Start Visual Studio and create a new project.
+
 ![Image](img/StartVisualStudio2019.png)
+
 Select C++ and select Windows Desktop Application.
+
 ![Image](img/CreateProject.png)
+
 Name the project.
+
 ![Image](img/NameProject.png)
+
 Create the project.
+
 ![Image](img/ProjectCreated.png)
+
 Confirm any prompt that appears.
 
 ## Add Allegro
 Start the NuGet package manager.
+
 ![Image](img/OpenNuget.png)
+
 Click Browse when NuGet has opened.
+
 ![Image](img/ClickBrowse.png)
+
 Type allegro in the search field then select "Allegro by Allegro Developers v5", mark the checkbox and click install.
+
 ![Image](img/SearchAndInstall.png)
+
+
 Installing allegro may take some time. You might be asked to confirm the installation.
+
 ![Image](img/WaitForInstall.png)
+
 Wait until the installation process finishes as shown in the output window.
 
 ## Configure Allegro
 View the properties of the project by right clicking it
+
 ![Image](img/ProjectProperties.png)
+
 Select "All Configurations" in the top left corner and click "Allegro 5" then click "Add-ons". Then add the features of allegro that we intend to use.
+
 ![Image](img/SelectAddOns.png)
+
 Select "Release" in the top left corner and click "Allegro 5" then click "Library Type".  Let the release version be a single executable.
+
 ![Image](img/SingleExecutable.png)
+
 Optionally configure the Debug version by selecting "Debug" instead of "Release".
 
 You might also want to disable the linker warning about missing .pdb files
+
 ![Image](img/DisableLinkerWarning.png)
 
 ## Copy the <a href="source">source</a></span> code
 You can use the command line to copy the source files to the project folder or the guide below.
 
 Open File Explorer and navigate to the source folder and copy all the files in it.
+
 ![Image](img/SelectFilesToCopy.png)
+
 Then close the File Explorer.
 
 Right click the project and select 'Open Folder in File Explorer'.
+
 ![Image](img/OpenExplorer.png)
+
 It should look like this.
+
 ![Image](img/ExplorerOpened.png)
+
 Then paste the <a href="source">source</a></span> files with Ctrl-V and overwrite existing files.
-![Image](img/ReplaceOrSkip.png)          
+
+![Image](img/ReplaceOrSkip.png)
+
 Confirm if Visual Studio asks you to reload any files.
 
 Then close the File Explorer.
 
 ## Configure the project to include the source files
 Select 'Project -> Add Existing Item' and add the files we just pasted.
+
 ![Image](img/AddExisting.png)
+
 Here you can see the files to avoid.
+
 ![Image](img/FilesCopied.png)    
+
 Delete the file Tetris.cpp from the project by right clicking it.
+
 ![Image](img/DeleteTetrisCpp.png)
+
 The project should now compile.
 
 ## Run the game
 Press F5 to build and run the game.
+
 ![Image](img/RunGame.png)
+
 General key bindings.
 
             - M      Togle music.<br/>
