@@ -1,8 +1,52 @@
 # Build and run Tetris
 
 ## Source 
-The folder named [source](source) contains the source code.
+The folder named [source](Tetris) contains the source code.
+
+### Souce Listing
+
+ - AllegroFont.cpp
+ - AllegroFont.h
+ - AllegroResources.cpp
+ - AllegroResources.h
+ - AllegroSound.cpp
+ - AllegroSound.h
+ - BasicResources.cpp
+ - BasicResources.h
+ - FpsCounter.cpp
+ - FpsCounter.h
+ - GameAudio.cpp
+ - GameAudio.h
+ - GameFonts.cpp
+ - GameFonts.h
+ - GameMonitor.cpp
+ - GameMonitor.h
+ - Main.cpp
+ - Main.h
+ - Resource.h
+ - Scope.cpp
+ - Scope.h
+ - stdafx.cpp
+ - stdafx.h
+ - targetver.h
+ - Tetris.rc
+ - TetrisElement.cpp
+ - TetrisElement.h
+ - TetrisGame.cpp
+ - TetrisGame.h
+ - TetrisKey.cpp
+ - TetrisKey.h
+ - TetrisKeyboard.cpp
+ - TetrisKeyboard.h
+ - TetrisPlayer.cpp
+ - TetrisPlayer.h
+ - TetrisShape.cpp
+ - TetrisShape.h
+ - Util.cpp
+ - Util.h
  
+ Download only these files to avoid insecure binaries.
+
 ## Notes
 The game is written in C++ and uses Allegro 5.
 We use Visual Studio 2019 to complie and run the program.
@@ -66,7 +110,7 @@ You might also want to disable the linker warning about missing .pdb files
 
 ![Image](img/DisableLinkerWarning.png)
 
-## Copy the <a href="source">source</a></span> code
+## Copy the [source](Tetris) code
 You can use the command line to copy the source files to the project folder or the guide below.
 
 Open File Explorer and navigate to the source folder and copy all the files in it.
@@ -83,7 +127,7 @@ It should look like this.
 
 ![Image](img/ExplorerOpened.png)
 
-Then paste the <a href="source">source</a></span> files with Ctrl-V and overwrite existing files.
+Then paste the [source](Tetris) files with Ctrl-V and overwrite existing files.
 
 ![Image](img/ReplaceOrSkip.png)
 
@@ -143,46 +187,3 @@ Maybe a 1x1 piece can begin to grow, and pop of the player drops a piece on it b
 
 Create a version that uses windows native sounds only.
 
-## Souce Listing
-
- - AllegroFont.cpp
- - AllegroFont.h
- - AllegroResources.cpp
- - AllegroResources.h
- - AllegroSound.cpp
- - AllegroSound.h
- - BasicResources.cpp
- - BasicResources.h
- - FpsCounter.cpp
- - FpsCounter.h
- - GameAudio.cpp
- - GameAudio.h
- - GameFonts.cpp
- - GameFonts.h
- - GameMonitor.cpp
- - GameMonitor.h
- - Main.cpp
- - Main.h
- - Resource.h
- - Scope.cpp
- - Scope.h
- - stdafx.cpp
- - stdafx.h
- - targetver.h
- - Tetris.rc
- - TetrisElement.cpp
- - TetrisElement.h
- - TetrisGame.cpp
- - TetrisGame.h
- - TetrisKey.cpp
- - TetrisKey.h
- - TetrisKeyboard.cpp
- - TetrisKeyboard.h
- - TetrisPlayer.cpp
- - TetrisPlayer.h
- - TetrisShape.cpp
- - TetrisShape.h
- - Util.cpp
- - Util.h
- 
- Download only these files to avoid insecure binaries.
