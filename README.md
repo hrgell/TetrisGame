@@ -11,7 +11,6 @@ When we use the term Allegro we mean Allegro 5.
 ## Create the Projct
 Start Visual Studio and create a new project.
 ![Image](img/StartVisualStudio2019.png)
-![Image](img/StartVisualStudio2019.png)
 Select C++ and select Windows Desktop Application.
 ![Image](img/CreateProject.png)
 Name the project.
@@ -38,15 +37,18 @@ Select "All Configurations" in the top left corner and click "Allegro 5" then cl
 ![Image](img/SelectAddOns.png)
 Select "Release" in the top left corner and click "Allegro 5" then click "Library Type".  Let the release version be a single executable.
 ![Image](img/SingleExecutable.png)
-Optionally configure the Debug version by selecting "Debug" instead of "Release".<p>
+Optionally configure the Debug version by selecting "Debug" instead of "Release".
+
 You might also want to disable the linker warning about missing .pdb files
 ![Image](img/DisableLinkerWarning.png)
 
 ## Copy the <a href="source">source</a></span> code
 You can use the command line to copy the source files to the project folder or the guide below.
+
 Open File Explorer and navigate to the source folder and copy all the files in it.
 ![Image](img/SelectFilesToCopy.png)
 Then close the File Explorer.
+
 Right click the project and select 'Open Folder in File Explorer'.
 ![Image](img/OpenExplorer.png)
 It should look like this.
@@ -54,6 +56,7 @@ It should look like this.
 Then paste the <a href="source">source</a></span> files with Ctrl-V and overwrite existing files.
 ![Image](img/ReplaceOrSkip.png)          
 Confirm if Visual Studio asks you to reload any files.
+
 Then close the File Explorer.
 
 ## Configure the project to include the source files
@@ -69,25 +72,31 @@ The project should now compile.
 Press F5 to build and run the game.
 ![Image](img/RunGame.png)
 General key bindings.
-            - M      Togle music.
-            - F3     Togle grid.
-            - F5     Start a new game.
-            - F10    Togle the way the pieces move.
+
+            - M      Togle music.<br/>
+            - F3     Togle grid.<br/>
+            - F5     Start a new game.<br/>
+            - F10    Togle the way the pieces move.<br/>
 Player 1 key bindings.
-            - A      Move Left.
-            - S      Move Down.
-            - D      Move Right.
-            - W      Rotate.
+            - A      Move Left.<br/>
+            - S      Move Down.<br/>
+            - D      Move Right.<br/>
+            - W      Rotate.<br/>
 Player 2 key bindings.
-            - LEFT   Move Left.
-            - DN     Move Down.
-            - RIGHT  Move Right.
-            - UP     Rotate.
+            - LEFT   Move Left.<br/>
+            - DN     Move Down.<br/>
+            - RIGHT  Move Right.<br/>
+            - UP     Rotate.<br/>
 
 ## Comments
 The game needs better keyboard handling, ie keyboard strokes should be stored in a queue with all SHIFT info.
+
 Rotation needs to be made less strict and refactored with they keyboard code.
+
 The screen should shake proportionaly to the amount of rows popped.
+
 Maybe enable dropping of 1x1 piece of debris on the opponents screen, that cant be moved, if you clear rows twice in a row.
+
 Maybe a 1x1 piece can begin to grow, and pop of the player drops a piece on it before it is fully grown.
+
 Create a version that uses windows native sounds only.
