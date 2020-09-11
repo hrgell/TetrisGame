@@ -142,3 +142,47 @@ Maybe enable dropping of 1x1 piece of debris on the opponents screen, that cant 
 Maybe a 1x1 piece can begin to grow, and pop of the player drops a piece on it before it is fully grown.
 
 Create a version that uses windows native sounds only.
+
+# Souce Listing
+
+ - AllegroFont.cpp
+ - AllegroFont.h
+ - AllegroResources.cpp
+ - AllegroResources.h
+ - AllegroSound.cpp
+ - AllegroSound.h
+ - BasicResources.cpp
+ - BasicResources.h
+ - FpsCounter.cpp
+ - FpsCounter.h
+ - GameAudio.cpp
+ - GameAudio.h
+ - GameFonts.cpp
+ - GameFonts.h
+ - GameMonitor.cpp
+ - GameMonitor.h
+ - Main.cpp
+ - Main.h
+ - Resource.h
+ - Scope.cpp
+ - Scope.h
+ - stdafx.cpp
+ - stdafx.h
+ - targetver.h
+ - Tetris.rc
+ - TetrisElement.cpp
+ - TetrisElement.h
+ - TetrisGame.cpp
+ - TetrisGame.h
+ - TetrisKey.cpp
+ - TetrisKey.h
+ - TetrisKeyboard.cpp
+ - TetrisKeyboard.h
+ - TetrisPlayer.cpp
+ - TetrisPlayer.h
+ - TetrisShape.cpp
+ - TetrisShape.h
+ - Util.cpp
+ - Util.h
+ 
+ Download only these files to avoid insecure binaries.
