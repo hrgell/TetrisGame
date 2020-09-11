@@ -1,49 +1,18 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Allegro 5 Test</title>
-<meta name="description" content="HOWTO Compile Tetris implemented with C++ and Allegro5">
-<style>
-body {
-    font-family: Arial, Helvetica, sans-serif;
-}
-.fixed {
-    font-family: "Courier New", Courier, monospace;
-}
-
-h1 { 
-    font-size:38px; 
-    color:black; 
-    font-weight:bold; 
-} 
-summary { 
-    font-size:22px; 
-    color:black; 
-    font-weight:bold; 
-}
-details { 
-    margin-bottom:52px; 
-}
-</style>
-</head>
-<body>
     <h1>Build and run Tetris</h1>
-    <details open>
-        <summary>Source</summary> 
+    <h2>Source</h2> 
         <p>The folder named <span class="fixed"><a href="source">source</a></span> contains the source code.</p>
-    </details>
+
     
     
-    <details open> 
-        <summary>Notes</summary>
+
+    <h2>Notes</h2>
         <p>The game is written in C++ and uses Allegro 5.</p>
         <p>We use Visual Studio 2019 to complie and run the program.</p>
         <p>When we use the term Allegro we mean Allegro 5.</p>
-    </details>
+
     
-    <details open> 
-        <summary>Create the Projct</summary>
+
+    <h2>Create the Projct</h2>
         <p>Start Visual Studio and create a new project.</p>
         <img src="img/StartVisualStudio2019.png" />
         <p>Select C++ and select Windows Desktop Application.</p>
@@ -53,10 +22,10 @@ details {
         <p>Create the project.</p>
         <img src="img/ProjectCreated.png" />
         <p>Confirm any prompt that appears.</p>
-    </details>
 
-    <details open>    
-        <summary>Add Allegro</summary>
+
+
+    <h2>Add Allegro</h2>
         <p>Start the NuGet package manager.</p>
         <img src="img/OpenNuget.png" />
         <p>Click Browse when NuGet has opened.</p>
@@ -66,10 +35,9 @@ details {
         <p>Installing allegro may take some time. You might be asked to confirm the installation.</p>
         <img src="img/WaitForInstall.png" />
         <p>Wait until the installation process finishes as shown in the output window.</p>
-    </details>
+
     
-    <details open>
-        <summary>Configure Allegro</summary>
+    <h2>Configure Allegro</h2>
         <p>View the properties of the project by right clicking it</p>
         <img src="img/ProjectProperties.png" />
         <p>Select "All Configurations" in the top left corner and click "Allegro 5" then click "Add-ons". Then add the features of allegro that we intend to use.</p>
@@ -80,10 +48,9 @@ details {
         <!-- img src="img/ConfigureDebugLinkage.png" /-->
         <p>You might also want to disable the linker warning about missing .pdb files</p>
         <img src="img/DisableLinkerWarning.png" />
-    </details>
     
-    <details open>    
-        <summary>Copy the <a href="source">source</a></span> code</summary>
+    
+    <h2>Copy the <a href="source">source</a></span> code</h2>
         <p>You can use the command line to copy the source files to the project folder or the guide below.</p>
         <p>Open File Explorer and navigate to the source folder and copy all the files in it.</p>
         <img src="img/SelectFilesToCopy.png" />
@@ -96,10 +63,9 @@ details {
         <img src="img/ReplaceOrSkip.png" />          
         <p>Confirm if Visual Studio asks you to reload any files.</p>
         <p>Then close the File Explorer.</p>
-    </details>
 
-    <details open>
-        <summary>Configure the project to include the source files</summary>
+
+    <h2>Configure the project to include the source files</h2>
         <p>Select 'Project -> Add Existing Item' and add the files we just pasted.</p>
         <img src="img/AddExisting.png" />
         <p>Here you can see the files to avoid.</p>
@@ -107,10 +73,9 @@ details {
         <p>Delete the file Tetris.cpp from the project by right clicking it.</p>
         <img src="img/DeleteTetrisCpp.png" />
         <p>The project should now compile.</p>
-    </details>
 
-    <details open>
-        <summary>Run the game</summary>
+
+    <h2>Run the game</h2>
         <p>Press F5 to build and run the game.</p>
         <img src="img/RunGame.png" />
         <p>General key bindings.</p>
@@ -134,16 +99,12 @@ details {
             <li class="fixed">RIGHT  Move Right.</li>
             <li class="fixed">UP     Rotate.</li>
         </ul>
-    </details>
+
     
-    <details open>
-        <summary>Comments</summary>
+    <h2>Comments</h2>
         <p>The game needs better keyboard handling, ie keyboard strokes should be stored in a queue with all SHIFT info.</p>
         <p>Rotation needs to be made less strict and refactored with they keyboard code.</p>
         <p>The screen should shake proportionaly to the amount of rows popped.</p>
         <p>Maybe enable dropping of 1x1 piece of debris on the opponents screen, that cant be moved, if you clear rows twice in a row.</p>
         <p>Maybe a 1x1 piece can begin to grow, and pop of the player drops a piece on it before it is fully grown.</p>
         <p>Create a version that uses windows native sounds only.</p>
-    </details>
-</body>
-</html>
