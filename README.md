@@ -39,7 +39,6 @@ Select "All Configurations" in the top left corner and click "Allegro 5" then cl
 Select "Release" in the top left corner and click "Allegro 5" then click "Library Type".  Let the release version be a single executable.
 ![Image](img/SingleExecutable.png)
 Optionally configure the Debug version by selecting "Debug" instead of "Release".<p>
-        <!-- img src="img/ConfigureDebugLinkage.png" /-->
 You might also want to disable the linker warning about missing .pdb files
 ![Image](img/DisableLinkerWarning.png)
 
@@ -70,20 +69,20 @@ The project should now compile.
 Press F5 to build and run the game.
 ![Image](img/RunGame.png)
 General key bindings.
-            * M      Togle music.</li>
-            * F3     Togle grid.</li>
-            * F5     Start a new game.</li>
-            * F10    Togle the way the pieces move.</li>
+            - M      Togle music.
+            - F3     Togle grid.
+            - F5     Start a new game.
+            - F10    Togle the way the pieces move.
 Player 1 key bindings.
-            * A      Move Left.</li>
-            * S      Move Down.</li>
-            * D      Move Right.</li>
-            * W      Rotate.</li>
+            - A      Move Left.
+            - S      Move Down.
+            - D      Move Right.
+            - W      Rotate.
 Player 2 key bindings.
-            * LEFT   Move Left.</li>
-            * DN     Move Down.</li>
-            * RIGHT  Move Right.</li>
-            * UP     Rotate.</li>
+            - LEFT   Move Left.
+            - DN     Move Down.
+            - RIGHT  Move Right.
+            - UP     Rotate.
 
 ## Comments
 The game needs better keyboard handling, ie keyboard strokes should be stored in a queue with all SHIFT info.
