@@ -78,11 +78,13 @@ General key bindings.
             - F5     Start a new game.<br/>
             - F10    Togle the way the pieces move.<br/>
 Player 1 key bindings.
+
             - A      Move Left.<br/>
             - S      Move Down.<br/>
             - D      Move Right.<br/>
             - W      Rotate.<br/>
 Player 2 key bindings.
+
             - LEFT   Move Left.<br/>
             - DN     Move Down.<br/>
             - RIGHT  Move Right.<br/>
