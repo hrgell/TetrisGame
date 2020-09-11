@@ -113,22 +113,22 @@ Press F5 to build and run the game.
 
 General key bindings.
 
-            - M      Togle music.<br/>
-            - F3     Togle grid.<br/>
-            - F5     Start a new game.<br/>
-            - F10    Togle the way the pieces move.<br/>
+            - M      Togle music.
+            - F3     Togle grid.
+            - F5     Start a new game.
+            - F10    Togle the way the pieces move.
 Player 1 key bindings.
 
-            - A      Move Left.<br/>
-            - S      Move Down.<br/>
-            - D      Move Right.<br/>
-            - W      Rotate.<br/>
+            - A      Move Left.
+            - S      Move Down.
+            - D      Move Right.
+            - W      Rotate.
 Player 2 key bindings.
 
-            - LEFT   Move Left.<br/>
-            - DN     Move Down.<br/>
-            - RIGHT  Move Right.<br/>
-            - UP     Rotate.<br/>
+            - LEFT   Move Left.
+            - DN     Move Down.
+            - RIGHT  Move Right.
+            - UP     Rotate.
 
 ## Comments
 The game needs better keyboard handling, ie keyboard strokes should be stored in a queue with all SHIFT info.
