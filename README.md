@@ -1,7 +1,7 @@
 # Build and run Tetris
 
 ## Source 
-The folder named [source](Tetris) contains the source code.
+The folder named [Tetris](Tetris) contains the source code.
 
 ### Souce Listing
 
