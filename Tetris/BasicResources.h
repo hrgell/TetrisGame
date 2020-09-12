@@ -37,6 +37,7 @@ public:
 	std::string wavname_tada;
 	std::vector<TetrisShape> shape_types;
 	std::vector<TetrisShape> oddshape_types;
+	std::vector<TetrisShape> debris_types;
 
 	BasicResources();
 	~BasicResources();

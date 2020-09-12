@@ -3,6 +3,8 @@
 #include "TetrisPlayer.h"
 #include "Util.h"
 
+#include <stack>
+
 // Todo Work on how keys are pressed and the movement of tetris pieces, how they move and snap to the grid.
 
 TetrisPlayer::TetrisPlayer(AllegroResources &gb)
@@ -34,6 +36,8 @@ void TetrisPlayer::SetPosition(float left, float top)
 void TetrisPlayer::SetSize(size_t numcols, size_t numrows, long unitx, long unity)
 {
 	score = 0;
+	if (debris.size() > 0)
+		debris.clear();
 	if (grid.size() > 0)
 		grid.clear();
 	this->unitx = unitx;
@@ -225,6 +229,13 @@ TetrisPosition TetrisPlayer::GetInitialShapePosition() {
 	return { x , y };
 }
 
+TetrisPosition TetrisPlayer::GetInitialDebrisPosition() {
+	float x = left + indentx + (DiceRoll(numcols) - 1) * unitx;
+	float y = top - unity * 4 - 18;
+	y = top - unity * toprows + unity * 6;
+	return { x , y };
+}
+
 TetrisElement TetrisPlayer::GetRandomTetrisElement(float x, float y, size_t id) {
 	size_t siz = resources.shape_types.size();
 	assert(siz > 0);
@@ -274,6 +285,19 @@ void TetrisPlayer::OddShape()
 	shapes.push(TetrisElement(resources.oddshape_types[0], point.first, point.second));
 }
 
+// Must only be called once per vertical tick.
+bool TetrisPlayer::DropDebris()
+{
+	if (!playing)
+		return true;
+	//if (debris.size() < 1) {
+		TetrisPosition point = GetInitialDebrisPosition();
+		debris.push_back(TetrisElement(resources.debris_types[0], point.first, point.second));
+	//}
+	TetrisElement &elem = debris.front();
+	return (TestCollision(elem) == COLLISION_NONE);
+}
+
 TetrisSquare TetrisPlayer::GetRelativePositionOfSquare(TetrisShape shape, TetrisSquare point) {
 	float x = unitx * point.first;
 	float y = unity * (shape.dimensions - point.second - 1);
@@ -320,6 +344,8 @@ bool TetrisPlayer::DrawFrame()
 	float dx = (4 - elem.shape.dimensions) * unitx / 2;
 	float dy = (4 - elem.shape.dimensions) * unity / 2 - 2 * unity;
 	DrawShape(elem, dx, dy);
+	for (auto& obj : debris) 
+		DrawShape(obj);
 	DrawText();
 	return true;
 }
@@ -368,21 +394,30 @@ TetrisPosition TetrisPlayer::GetCoordsOfShapepoint(TetrisElement &elem, TetrisSq
 	return { x, y };
 }
 
-bool TetrisPlayer::Dump(TetrisElement &elem) {
+float TetrisPlayer::DrawPieceOnGrid(TetrisElement& elem) {
 	float highest_row = 0;
-	//al_draw_filled_rectangle(elem.left, elem.top, elem.left + 8, elem.top + 8, tetris_color_white);
 	TetrisSquares coordinates = elem.shape.GetRotation(elem.rotation);
 	for (TetrisSquare& point : coordinates) {
 		TetrisSquare square = GetRelativePositionOfSquare(elem.shape, point);
 		TetrisPosition coord = GetCoordsOfShapepoint(elem, square);
+#pragma warning( suppress: 26451 )
 		float columns = round(coord.first / unitx);
+#pragma warning( suppress: 26451 )
 		float rows = floor(coord.second / unity);
 		if (highest_row < rows)
 			highest_row = rows;
 		Set(rows, columns, elem.shape.color);
 	}
-	if (highest_row > 0)
-		Earn(1 + (numrows - highest_row) / 5);
+	return highest_row;
+}
+
+bool TetrisPlayer::Dump(TetrisElement &elem) {
+	//al_draw_filled_rectangle(elem.left, elem.top, elem.left + 8, elem.top + 8, tetris_color_white);
+	float highest_row = DrawPieceOnGrid(elem);
+	if (highest_row > 0) {
+		size_t offset = (numrows - highest_row) / 5;
+		Earn(1 + offset);
+	}
 	NextShape();
 	return (collide(shapes.front(), 0, 0) == COLLISION_NONE);
 }
@@ -390,10 +425,11 @@ bool TetrisPlayer::Dump(TetrisElement &elem) {
 // TODO change the code, so it does a row per frame instead of all rows in one frame.
 bool TetrisPlayer::Transfer(size_t rows) {
 
-	if (rows == 2) {
+	if (rows == 1) {
+		DropDebris();
+	} else if (rows == 2) {
 		OddShape();
 	}
-
 	if (rows >= numrows || rows < 1)
 		return 0; // ok, ignore
 	size_t row;
@@ -668,6 +704,34 @@ bool TetrisPlayer::DoVerticalMove(TetrisElement &elem, float fps)
 	return true;
 }
 
+bool TetrisPlayer::DoVerticalDebrisMove()
+{
+	std::stack<size_t> positions;
+	size_t pos = 0;
+	for (auto& elem : debris) {
+		//TetrisElement& elem = debris.front();
+		long collision = MoveDown(elem);
+		if (collision != COLLISION_NONE) {
+			SyncWithGrid(elem);
+			collision = MoveDown(elem);
+			if (collision != COLLISION_NONE) {
+				gb.audio.PlayMove();
+				// todo we may fail if dump fails.
+				DrawPieceOnGrid(elem);
+				positions.push(pos);
+			}
+		}
+		++pos;
+	}
+	while (!positions.empty()) {
+		auto idx = positions.top();
+		DebugWriteMsg(string_format("\t\tTOP: %u / %u\r\n", (USHORT)idx, (USHORT)debris.size()));
+		debris.erase(debris.begin() + idx);
+		positions.pop();
+	}
+	return true;
+}
+
 void TetrisPlayer::Restart()
 {
 	numdumps = 0;
@@ -690,12 +754,30 @@ std::string  TetrisPlayer::ToString() {
 
 long TetrisPlayer::TestCollisionCurent()
 {
+	return TestCollision(shapes.front());
+	////std::string deb_colide;
+	//long colides = collide(shapes.front(), 0, 0);
+	//if (colides != COLLISION_NONE) {
+	//	//deb_colide = "colide";
+	//	SyncWithGrid(shapes.front());
+	//	colides = collide(shapes.front(), 0, 0);
+	//	if (colides != COLLISION_NONE) {
+	//		//deb_colide += " failed";
+	//	}
+	//}
+	//return colides;
+}
+
+
+long TetrisPlayer::TestCollision(TetrisElement& elem)
+{
 	//std::string deb_colide;
-	long colides = collide(shapes.front(), 0, 0);
+	TetrisElement &xxxx = elem;
+	long colides = collide(elem, 0, 0);
 	if (colides != COLLISION_NONE) {
 		//deb_colide = "colide";
-		SyncWithGrid(shapes.front());
-		colides = collide(shapes.front(), 0, 0);
+		SyncWithGrid(elem);
+		colides = collide(elem, 0, 0);
 		if (colides != COLLISION_NONE) {
 			//deb_colide += " failed";
 		}
@@ -703,7 +785,7 @@ long TetrisPlayer::TestCollisionCurent()
 	return colides;
 }
 
-// @return True of movement could be made.
+// @return True if movement could be made.
 bool TetrisPlayer::ProcessMovement(AllegroResources &gb, FpsCounter &fps_vert, bool do_horz, bool do_vert)
 {
 	if (!playing)
@@ -729,6 +811,7 @@ bool TetrisPlayer::ProcessMovement(AllegroResources &gb, FpsCounter &fps_vert, b
 	}
 	// process vertical movement
 	if (do_vert) {
+		DoVerticalDebrisMove();
 		++numdumps;
 		if (!DoVerticalMove(shapes.front(), fps_vert.fps)) {
 			if (numdumps % 10 == 0) {

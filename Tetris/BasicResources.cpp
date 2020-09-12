@@ -38,7 +38,8 @@ BasicResources::BasicResources()
 		{ 5, 3, {{1,2}, {0,1}, {1,1}, {2,1} }, color_6 },
 		{ 6, 3, {{0,2}, {1,2}, {1,1}, {2,1} }, color_7 }
 		}),
-	oddshape_types({ { 7, 3, {{0,2}, {0,1}, {0,0}, {1,0}, {2, 0}}, color_8 }, })
+	oddshape_types({ { 7, 3, {{0,2}, {0,1}, {0,0}, {1,0}, {2,0}}, color_8 }, }),
+	debris_types({ { 8, 1, {{0,0}}, color_1 }, })
 {
 } // constructor
 
@@ -59,7 +60,10 @@ std::string BasicResources::GetAppdata()
 		return "";
 	std::string folder_name = string_format("%s\\Tetris", val);
 	free(val);
-	_mkdir(folder_name.c_str());
+	// if _mkdir == -1 and errno == EEXIST then all is ok.
+	auto res = _mkdir(folder_name.c_str());
+	if(res == -1 && errno != EEXIST)
+		return "";
 	if (!FolderExists(folder_name))
 		return "";
 	return folder_name + "\\";

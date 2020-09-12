@@ -28,6 +28,7 @@ public:
 	size_t siz;
 	std::vector<ALLEGRO_COLOR> grid;
 	std::queue<TetrisElement> shapes;
+	std::deque<TetrisElement> debris;
 	bool playing;
 	size_t score;
 	TetrisKeyboard *kbd;
@@ -59,9 +60,11 @@ public:
 	void DrawBoundingBox(float x, float y, TetrisShape shape);
 	bool DrawGrid();
 	TetrisPosition GetInitialShapePosition();
+	TetrisPosition GetInitialDebrisPosition();
 	TetrisElement GetRandomTetrisElement(float x, float y, size_t elemtype);
 	void NextShape();
 	void OddShape();
+	bool DropDebris();
 	TetrisSquare GetRelativePositionOfSquare(TetrisShape shape, TetrisSquare point);
 	void DrawRotations(TetrisShape& shape, float x, float y);
 	void DrawAllRotations(float x, float y);
@@ -74,8 +77,10 @@ public:
 	bool DoHorizontalMoveV2(TetrisElement & elem);
 	bool DoHorizontalMoveV1(TetrisElement & elem);
 	bool DoVerticalMove(TetrisElement & elem, float fps);
+	bool DoVerticalDebrisMove();
 	void ProcessImmediateKeyboardInput();
-	bool Dump(TetrisElement &elem);
+	float DrawPieceOnGrid(TetrisElement& elem);
+	bool Dump(TetrisElement& elem);
 	bool Transfer(size_t rows);
 	long SyncWithGrid(TetrisElement &elem);
 	long SyncWithRow(TetrisElement &elem);
@@ -91,6 +96,7 @@ public:
 	std::string ToString();
 	bool ProcessMovement(AllegroResources &gb, FpsCounter &fps_vert, bool do_horz, bool do_vert);
 	long TestCollisionCurent();
+	long TestCollision(TetrisElement& elem);
 	long MoveDown(TetrisElement &elem);
 	bool RemoveSquare();
 	
