@@ -7,9 +7,9 @@
 
 // Todo Work on how keys are pressed and the movement of tetris pieces, how they move and snap to the grid.
 
-TetrisPlayer::TetrisPlayer(AllegroResources &gb)
+TetrisPlayer::TetrisPlayer(AllegroResources& gb)
 	:
-    right(0), bottom(0), unitx(0), unity(0), width(0), height(0), indentx(0), indenty(0), kbd(),
+	right(0), bottom(0), unitx(0), unity(0), width(0), height(0), indentx(0), indenty(0), kbd(),
 	resources(BasicResources::Instance()),
 	gb(gb),
 	glidingmove(true),
@@ -23,7 +23,7 @@ TetrisPlayer::~TetrisPlayer() {
 	grid.clear();
 }
 
-void TetrisPlayer::SetKeyboard(TetrisKeyboard *kbd) {
+void TetrisPlayer::SetKeyboard(TetrisKeyboard* kbd) {
 	this->kbd = kbd;
 }
 
@@ -96,7 +96,7 @@ bool TetrisPlayer::RowIsEmpty(size_t row) {
 }
 
 // @return Returns true if the player completed one or more rows.
-bool TetrisPlayer::Collapse(TetrisPlayer *grid) {
+bool TetrisPlayer::Collapse(TetrisPlayer* grid) {
 	if (numrows == 0)
 		return false;
 	if (numcols == 0)
@@ -257,13 +257,13 @@ void TetrisPlayer::NextShape()
 	size_t siz = shapes.size();
 	size_t elemtype = 0xffff;
 	if (siz > 0) {
-		TetrisElement &elem = shapes.front();
+		TetrisElement& elem = shapes.front();
 		elemtype = elem.shape.id;
 		shapes.pop();
 	}
 	TetrisPosition point = GetInitialShapePosition();
 	shapes.push(GetRandomTetrisElement(point.first, point.second, elemtype));
-	TetrisElement &elem = shapes.front();
+	TetrisElement& elem = shapes.front();
 	elemtype = elem.shape.id;
 	if (siz < 2)
 		shapes.push(GetRandomTetrisElement(point.first, point.second, elemtype));
@@ -291,10 +291,12 @@ bool TetrisPlayer::DropDebris()
 	if (!playing)
 		return true;
 	//if (debris.size() < 1) {
+	for (auto idx = 0; idx < 3; ++idx) {
 		TetrisPosition point = GetInitialDebrisPosition();
 		debris.push_back(TetrisElement(resources.debris_types[0], point.first, point.second));
+	}
 	//}
-	TetrisElement &elem = debris.front();
+	TetrisElement& elem = debris.front();
 	return (TestCollision(elem) == COLLISION_NONE);
 }
 
@@ -329,7 +331,7 @@ void TetrisPlayer::DrawShape(TetrisElement& elem, float dx, float dy) {
 		float y = elem.top + elem.shape.dimensions * unity - unity * (point.second + 1);
 		DrawSquare(x + dx, y + dy, elem.shape.color);
 	}
-	if(gb.developing)
+	if (gb.developing)
 		DrawBoundingBox(elem.left + dx, elem.top + dy, elem.shape);
 }
 
@@ -337,15 +339,19 @@ bool TetrisPlayer::DrawFrame()
 {
 	DrawGameBoard();
 	bool isempty = DrawGrid();
+	// draw the falling piece controled by the player
 	if (playing || !isempty)
 		DrawShape(shapes.front());
-	auto &elem = shapes.back();
-	// todo move calculation to center the next piece elsewhere
-	float dx = (4 - elem.shape.dimensions) * unitx / 2;
-	float dy = (4 - elem.shape.dimensions) * unity / 2 - 2 * unity;
-	DrawShape(elem, dx, dy);
-	for (auto& obj : debris) 
-		DrawShape(obj);
+	// draw the hint for the next piece
+	// todo move calculation dx,dy - howto center the piece elsewhere
+	auto& next = shapes.back();
+	float dx = (4 - next.shape.dimensions) * unitx / 2;
+	float dy = (4 - next.shape.dimensions) * unity / 2 - 2 * unity;
+	DrawShape(next, dx, dy);
+	// draw debris
+	for (auto& elem : debris)
+		DrawShape(elem);
+	// draw the info about the game state
 	DrawText();
 	return true;
 }
@@ -376,7 +382,7 @@ void TetrisPlayer::DrawGameBoard() {
 
 void TetrisPlayer::Rotate(bool clockwise)
 {
-	TetrisElement &elem = shapes.front();
+	TetrisElement& elem = shapes.front();
 	size_t siz = elem.shape.rotations.size();
 	if (clockwise) {
 		if (++elem.rotation >= siz)
@@ -388,13 +394,13 @@ void TetrisPlayer::Rotate(bool clockwise)
 		elem.rotation = siz - 1;
 }
 
-TetrisPosition TetrisPlayer::GetCoordsOfShapepoint(TetrisElement &elem, TetrisSquare &point) {
+TetrisPosition TetrisPlayer::GetCoordsOfShapepoint(TetrisElement& elem, TetrisSquare& point) {
 	float x = elem.left - left - indentx + point.first;
 	float y = elem.top - top - indenty + point.second;
 	return { x, y };
 }
 
-float TetrisPlayer::DrawPieceOnGrid(TetrisElement& elem) {
+float TetrisPlayer::CopyPieceToGrid(TetrisElement& elem) {
 	float highest_row = 0;
 	TetrisSquares coordinates = elem.shape.GetRotation(elem.rotation);
 	for (TetrisSquare& point : coordinates) {
@@ -411,23 +417,25 @@ float TetrisPlayer::DrawPieceOnGrid(TetrisElement& elem) {
 	return highest_row;
 }
 
-bool TetrisPlayer::Dump(TetrisElement &elem) {
+bool TetrisPlayer::Dump(TetrisElement& elem) {
 	//al_draw_filled_rectangle(elem.left, elem.top, elem.left + 8, elem.top + 8, tetris_color_white);
-	float highest_row = DrawPieceOnGrid(elem);
+	float highest_row = CopyPieceToGrid(elem);
 	if (highest_row > 0) {
 		size_t offset = (numrows - highest_row) / 5;
 		Earn(1 + offset);
 	}
 	NextShape();
+
 	return (collide(shapes.front(), 0, 0) == COLLISION_NONE);
 }
 
-// TODO change the code, so it does a row per frame instead of all rows in one frame.
+// TODO animate the insertion of rows
 bool TetrisPlayer::Transfer(size_t rows) {
 
 	if (rows == 1) {
 		DropDebris();
-	} else if (rows == 2) {
+	}
+	else if (rows == 2) {
 		OddShape();
 	}
 	if (rows >= numrows || rows < 1)
@@ -452,7 +460,7 @@ bool TetrisPlayer::Transfer(size_t rows) {
 		}
 	}
 	// TODO Adjust the position of the falling piece
-	TetrisElement &elem = shapes.front();
+	TetrisElement& elem = shapes.front();
 	while (collide(elem, 0, 0) != COLLISION_NONE) {
 		elem.top--;
 	}
@@ -460,20 +468,20 @@ bool TetrisPlayer::Transfer(size_t rows) {
 	return (blankrows < rows);
 }
 
-long TetrisPlayer::SyncWithGrid(TetrisElement &elem) {
+long TetrisPlayer::SyncWithGrid(TetrisElement& elem) {
 	SyncWithRow(elem);
 	SyncWithCol(elem);
 	return 0;
 }
 
-long TetrisPlayer::SyncWithRow(TetrisElement &elem) {
+long TetrisPlayer::SyncWithRow(TetrisElement& elem) {
 	float y = elem.top - top - indenty;
 	float rows = floor(y / unity);
 	elem.top = top + indenty + rows * unity;
 	return 0;
 }
 
-long TetrisPlayer::SyncWithCol(TetrisElement &elem) {
+long TetrisPlayer::SyncWithCol(TetrisElement& elem) {
 	float x = elem.left - left - indentx;
 	float cols = 0;
 	if (kbd->horizontal_move < 0) {
@@ -488,22 +496,22 @@ long TetrisPlayer::SyncWithCol(TetrisElement &elem) {
 	return 0;
 }
 
-TetrisPosition TetrisPlayer::GetBoundingBoxCoordinates(TetrisElement &elem, float dx, float dy)
+TetrisPosition TetrisPlayer::GetBoundingBoxCoordinates(TetrisElement& elem, float dx, float dy)
 {
 	float x = elem.left - left - indentx + dx;
 	float y = elem.top - top - indenty + dy;
 	return { x, y };
 }
 
-TetrisPosition TetrisPlayer::GetSquareCoordinates(TetrisElement &elem, TetrisPosition bbox, TetrisSquare point) {
+TetrisPosition TetrisPlayer::GetSquareCoordinates(TetrisElement& elem, TetrisPosition bbox, TetrisSquare point) {
 	TetrisSquare coord = GetRelativePositionOfSquare(elem.shape, point);
 	float x = bbox.first + coord.first;
 	float y = bbox.second + coord.second;
 	return { x, y };
 }
 
-
-long TetrisPlayer::CheckCollision(std::pair<long, long> &point)
+// TODO implement it or delete it
+long TetrisPlayer::CheckDebrisCollision(std::pair<long, long>& point)
 {
 	float x = point.first / unitx;
 	float y = point.second / unity;
@@ -522,7 +530,26 @@ long TetrisPlayer::CheckCollision(std::pair<long, long> &point)
 	return collision;
 }
 
-long TetrisPlayer::CheckCollisionWithGamebox(std::pair<long, long> & point, long cols, long rows)
+long TetrisPlayer::CheckCollision(std::pair<long, long>& point)
+{
+	float x = point.first / unitx;
+	float y = point.second / unity;
+	long cols = (long)round(x);
+	long rows = (long)round(y);
+	long collision = CheckCollisionWithGamebox(point, cols, rows);
+	// abort if we already got a collision.
+	if (collision != COLLISION_NONE)
+		return collision;
+	if (rows >= 0) {
+		ALLEGRO_COLOR color = Get(rows, cols);
+		if (IsDefault(color))
+			return COLLISION_NONE;
+		collision |= COLLISION_SQUARE;
+	}
+	return collision;
+}
+
+long TetrisPlayer::CheckCollisionWithGamebox(std::pair<long, long>& point, long cols, long rows)
 {
 	if (point.first < 0)
 		return COLLISION_LEFT;
@@ -535,7 +562,7 @@ long TetrisPlayer::CheckCollisionWithGamebox(std::pair<long, long> & point, long
 	return COLLISION_NONE;
 }
 
-long TetrisPlayer::collide(TetrisElement &elem, float dx, float dy) {
+long TetrisPlayer::collide(TetrisElement& elem, float dx, float dy) {
 	//al_draw_filled_rectangle(elem.left, elem.top, elem.left + 8, elem.top + 8, tetris_color_white);
 	long rst = COLLISION_NONE;
 	TetrisPosition bbox = GetBoundingBoxCoordinates(elem, dx, dy);
@@ -552,6 +579,27 @@ long TetrisPlayer::collide(TetrisElement &elem, float dx, float dy) {
 		square.second -= unity - 1;
 	}
 	return rst;
+}
+
+// Returns COLLISION_SQUARE if the two pieces intersect.
+long TetrisPlayer::collide_wit_debris(TetrisElement& elem, TetrisElement& elem2, float dx, float dy) {
+	// For each square in the the first element
+	TetrisPosition bbox = GetBoundingBoxCoordinates(elem, dx, dy);
+	for (TetrisSquare& point : elem.shape.rotations[elem.rotation]) {
+		std::pair<long, long> square = GetSquareCoordinates(elem, bbox, point);
+		// For each square in the next element
+		TetrisPosition bbox2 = GetBoundingBoxCoordinates(elem2, dx, dy);
+		for (TetrisSquare& point2 : elem2.shape.rotations[elem2.rotation]) {
+			std::pair<long, long> square2 = GetSquareCoordinates(elem2, bbox2, point2);
+			// Test if the squares overlap.
+			if (!((square2.first > square.first + unitx) // right of
+				|| (square2.first + unitx < square.first) // left of
+				|| (square2.second + unity < square.second) // above
+				|| (square2.second > square.second + unity))) // below
+				return COLLISION_SQUARE;
+		}
+	}
+	return COLLISION_NONE;
 }
 
 
@@ -583,7 +631,7 @@ void TetrisPlayer::ProcessImmediateKeyboardInput()
 	if (kbd->k_down.IsDown()) {
 		bool downmethod = true;
 		if (!downmethod) kbd->k_down.KeyUp();
-		TetrisElement &elem = shapes.front();
+		TetrisElement& elem = shapes.front();
 		float y = 0;
 		long steps = 0;
 		while (collide(elem, 0, unity * steps) == COLLISION_NONE)
@@ -604,7 +652,7 @@ void TetrisPlayer::ProcessImmediateKeyboardInput()
 	}
 }
 
-bool TetrisPlayer::IsVerticalyAligned(TetrisElement &elem)
+bool TetrisPlayer::IsVerticalyAligned(TetrisElement& elem)
 {
 	float x = elem.left - left - indentx;
 	float col = round(x / unitx);
@@ -613,14 +661,14 @@ bool TetrisPlayer::IsVerticalyAligned(TetrisElement &elem)
 	return false;
 }
 
-long TetrisPlayer::HorizontalMove(TetrisElement &elem, long dx) {
+long TetrisPlayer::HorizontalMove(TetrisElement& elem, long dx) {
 	long success = (collide(elem, dx, 0) == COLLISION_NONE);
 	if (success)
 		elem.left += dx;
 	return success;
 }
 
-bool TetrisPlayer::DoHorizontalMoveV1(TetrisElement &elem)
+bool TetrisPlayer::DoHorizontalMoveV1(TetrisElement& elem)
 {
 	long direction = 0;
 	if (kbd->horizontal_direction < 0)
@@ -645,7 +693,7 @@ bool TetrisPlayer::DoHorizontalMoveV1(TetrisElement &elem)
 	return success;
 }
 
-bool TetrisPlayer::DoHorizontalMoveV2(TetrisElement &elem)
+bool TetrisPlayer::DoHorizontalMoveV2(TetrisElement& elem)
 {
 	if (kbd->horizontal == 0)
 		return true;
@@ -662,7 +710,7 @@ bool TetrisPlayer::DoHorizontalMoveV2(TetrisElement &elem)
 	return success;
 }
 
-long TetrisPlayer::MoveDown(TetrisElement &elem) {
+long TetrisPlayer::MoveDown(TetrisElement& elem) {
 	long collision = collide(elem, 0, 1);
 	if (collision == COLLISION_NONE) {
 		auto oldtop = elem.top;
@@ -672,21 +720,19 @@ long TetrisPlayer::MoveDown(TetrisElement &elem) {
 			elem.top = oldtop;
 	}
 	if (collision == COLLISION_NONE) {
-		elem.vert = 0;
 		elem.waiting = 0;
 	}
 	return collision;
 }
 
-bool TetrisPlayer::DoVerticalMove(TetrisElement &elem, float fps)
+bool TetrisPlayer::DoVerticalMove(TetrisElement& elem, float fps)
 {
 	long collision = MoveDown(elem);
 	if (collision == COLLISION_NONE)
 		return true;
 
-	if (elem.waiting > 0) {
-		--elem.waiting;
-		if (elem.waiting > 0)
+	if (elem.Waiting()) {
+		if (elem.Wait() > 0)
 			return true;
 		SyncWithGrid(elem);
 		collision = MoveDown(elem);
@@ -700,7 +746,6 @@ bool TetrisPlayer::DoVerticalMove(TetrisElement &elem, float fps)
 	}
 	// todo if element has been in the same position two thirds of the waiting time, then dump it if its blocked.
 	elem.waiting = fps / 2;
-	elem.vert = elem.top;
 	return true;
 }
 
@@ -708,24 +753,28 @@ bool TetrisPlayer::DoVerticalDebrisMove()
 {
 	std::stack<size_t> positions;
 	size_t pos = 0;
-	for (auto& elem : debris) {
-		//TetrisElement& elem = debris.front();
-		long collision = MoveDown(elem);
+	for (auto& debr : debris) {
+		bool touches = false;
+		long collision = MoveDown(debr);
 		if (collision != COLLISION_NONE) {
-			SyncWithGrid(elem);
-			collision = MoveDown(elem);
+			SyncWithGrid(debr);
+			collision = MoveDown(debr);
 			if (collision != COLLISION_NONE) {
 				gb.audio.PlayMove();
 				// todo we may fail if dump fails.
-				DrawPieceOnGrid(elem);
-				positions.push(pos);
+				CopyPieceToGrid(debr);
+				touches = true;
 			}
 		}
+		if (collide_wit_debris(shapes.front(), debr, 0, 0) != COLLISION_NONE)
+			touches = true;
+		if (touches)
+			positions.push(pos);
 		++pos;
 	}
 	while (!positions.empty()) {
 		auto idx = positions.top();
-		DebugWriteMsg(string_format("\t\tTOP: %u / %u\r\n", (USHORT)idx, (USHORT)debris.size()));
+		//DebugWriteMsg(string_format("\t\tTOP: %u / %u\r\n", (USHORT)idx, (USHORT)debris.size()));
 		debris.erase(debris.begin() + idx);
 		positions.pop();
 	}
@@ -742,7 +791,7 @@ void TetrisPlayer::Restart()
 }
 
 std::string  TetrisPlayer::ToString() {
-	TetrisElement &elem = shapes.front();
+	TetrisElement& elem = shapes.front();
 	return
 		string_format("%.2f %.2f %.2f %.2f (%ld %ld) %ldx%ld %ld %ld",
 			left, top, right, bottom, unitx, unity, static_cast<long>(numrows), static_cast<long>(numcols), static_cast<long>(elem.left), static_cast<long>(elem.top));
@@ -772,7 +821,7 @@ long TetrisPlayer::TestCollisionCurent()
 long TetrisPlayer::TestCollision(TetrisElement& elem)
 {
 	//std::string deb_colide;
-	TetrisElement &xxxx = elem;
+	TetrisElement& xxxx = elem;
 	long colides = collide(elem, 0, 0);
 	if (colides != COLLISION_NONE) {
 		//deb_colide = "colide";
@@ -786,7 +835,7 @@ long TetrisPlayer::TestCollision(TetrisElement& elem)
 }
 
 // @return True if movement could be made.
-bool TetrisPlayer::ProcessMovement(AllegroResources &gb, FpsCounter &fps_vert, bool do_horz, bool do_vert)
+bool TetrisPlayer::ProcessMovement(AllegroResources& gb, FpsCounter& fps_vert, bool do_horz, bool do_vert)
 {
 	if (!playing)
 		return false;
@@ -811,8 +860,8 @@ bool TetrisPlayer::ProcessMovement(AllegroResources &gb, FpsCounter &fps_vert, b
 	}
 	// process vertical movement
 	if (do_vert) {
-		DoVerticalDebrisMove();
 		++numdumps;
+		DoVerticalDebrisMove();
 		if (!DoVerticalMove(shapes.front(), fps_vert.fps)) {
 			if (numdumps % 10 == 0) {
 				Earn(50);

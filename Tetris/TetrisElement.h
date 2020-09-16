@@ -12,13 +12,15 @@ public:
 	TetrisShape shape;
 	// How long we must wait before the element MUST move down or be dumped.
 	size_t waiting;
-	// The vertical position we wait at
-	float vert;
+	size_t age;
 public:
 	TetrisElement();
 	TetrisElement(TetrisShape shape, float left, float top, size_t rotation);
 	TetrisElement(TetrisShape shape, float left, float top);
 	~TetrisElement();
+	bool Waiting();
+	size_t Wait();
+	size_t Age();
 	size_t EmptyTopRows();
 };
 

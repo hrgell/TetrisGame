@@ -133,7 +133,7 @@ bool TetrisGame::ProcessGlobalKey(ALLEGRO_EVENT &event) {
 		player2.SwapMoveMethod();
 	}
 	else if (event.keyboard.keycode == ALLEGRO_KEY_F11) {
-		//player1.DropDebris();
+		player2.DropDebris();
 		//is_tetris = !is_tetris;
 		//SetWindowSize();
 	}
