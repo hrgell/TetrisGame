@@ -1,10 +1,12 @@
 # Build and run Tetris
 
 ## Source 
-The folder named [Tetris](Tetris) contains the source code.
+The folder named [Tetris](Tetris) contains the source code for the project.
 
 ### Souce Listing
 
+The folder named [source](source) contains only the basic source files and should be used if you intend to follow the guide.
+ 
  - AllegroFont.cpp
  - AllegroFont.h
  - AllegroResources.cpp
