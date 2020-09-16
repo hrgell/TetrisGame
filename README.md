@@ -112,7 +112,7 @@ You might also want to disable the linker warning about missing .pdb files
 
 ![Image](img/DisableLinkerWarning.png)
 
-## Copy the [source](Tetris) code
+## Copy the [source](source) code
 You can use the command line to copy the source files to the project folder or the guide below.
 
 Open File Explorer and navigate to the source folder and copy all the files in it.
@@ -129,7 +129,7 @@ It should look like this.
 
 ![Image](img/ExplorerOpened.png)
 
-Then paste the [source](Tetris) files with Ctrl-V and overwrite existing files.
+Then paste the source code files with Ctrl-V and overwrite existing files.
 
 ![Image](img/ReplaceOrSkip.png)
 
