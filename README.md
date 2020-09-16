@@ -94,7 +94,7 @@ Installing allegro may take some time. You might be asked to confirm the install
 Wait until the installation process finishes as shown in the output window.
 
 ## Configure Allegro
-View the properties of the project by right clicking it
+View the properties of the project. Right click the project and selecting Properties.
 
 ![Image](img/ProjectProperties.png)
 
