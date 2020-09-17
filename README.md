@@ -1,5 +1,7 @@
 # Build and run Tetris
 
+The project was created to evaluate Allegro and C++ and implements a 2-player tetris like game.  I decided to share the code to help others.
+
 ## Source 
 The folder named [Tetris](Tetris) contains the source code for the project.
 
@@ -183,9 +185,9 @@ Rotation needs to be made less strict and refactored with they keyboard code.
 
 The screen should shake proportionaly to the amount of rows popped.
 
-Maybe enable dropping of 1x1 piece of debris on the opponents screen, that cant be moved, if you clear rows twice in a row.
-
-Maybe a 1x1 piece can begin to grow, and pop of the player drops a piece on it before it is fully grown.
-
 Create a version that uses windows native sounds only.
+
+Drop debris every X seconds ?
+
+Let coliding debris merge with the player piece to create larger pieces.
 
