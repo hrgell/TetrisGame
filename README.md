@@ -184,10 +184,13 @@ We steer the falling pieces and try to make them fit to clear rows.
 We get a bonus when we clear rows by dropping a piece.
 
 If we clear more than one row by dropping a piece then:
-            = the bonus gained is exponential to the amount of rows cleared.
-            - the opponent gets rows inserted at the bottom of his pit.
-            - some debris will drop on the opponent if we cleared 2 rows.
-            - the opponents next piece becomes an L shape with 5 squres if we cleared 3 rows. ![Image](img/OddPiece.png)
+
+ - the bonus gained is exponential to the amount of rows cleared.
+ - the opponent gets rows inserted at the bottom of his pit.
+ - some debris will drop on the opponent if we cleared 2 rows.
+ - the opponents next piece becomes an L shape with 5 squres if we cleared 3 rows.
+ 
+ ![Image](img/OddPiece.png)
 
 ## Issues
 The game needs better keyboard handling, ie keyboard strokes should be stored in a queue with all SHIFT info.
