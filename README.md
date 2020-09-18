@@ -1,13 +1,20 @@
 # Build and run Tetris
+The project was created to evaluate Allegro and C++.
+The result is a tetris like game that can be played by 2 players. 
+I decided to share the code to help others.
+This is a guide on how to copy and compile the source code.
 
-The project was created to evaluate Allegro and C++ and implements a 2-player tetris like game.   I decided to share the code to help others.  Creating the project from scratch is descrbied below.
+We use Visual Studio 2019 to complie and run the program.
+When we use the term Allegro we mean Allegro 5.
+
+The code is hoby code, it is not profesional code, I wrote it in my spare time and I hope it might inspire a kid somewhere to become a programming wizard.
 
 ## Source 
-You can pull the entire git project or you can pull the essential [source](source) files. The essential files are the C++ files needed to create the project from scratch  (.cpp, .h, .rc).  Create the project from scratch to avoid downloading too many file types. 
+You can pull the entire git project and use the existing project file to build the program "Tetris.sln" or you can create the project yourself using the essential [source](source) files.
 
-### Souce Listing
+Creating the project from scratch is descrbied below.
 
-The folder named [source](source) contains only the basic source files and should be used if you intend to follow the guide.
+The essential files are the C++ files needed to create the project from scratch  (.cpp, .h, .rc). 
  
  - AllegroFont.cpp
  - AllegroFont.h
@@ -50,11 +57,6 @@ The folder named [source](source) contains only the basic source files and shoul
  - Util.h
  
  Download only these files to avoid insecure binaries.
-
-## Notes
-The game is written in C++ and uses Allegro 5.
-We use Visual Studio 2019 to complie and run the program.
-When we use the term Allegro we mean Allegro 5.
 
 ## Create the Projct
 Start Visual Studio and create a new project.
@@ -204,4 +206,3 @@ Create a version that uses windows native sounds only.
 Drop debris every X seconds ?
 
 Let coliding debris merge with the player piece to create larger pieces.
-
