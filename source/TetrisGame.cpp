@@ -76,6 +76,13 @@ long TetrisGame::timer_event(ALLEGRO_EVENT event)
 	bool do_grid = fps_grid.Tick(tick);
 	bool do_frame = fps_frame.Tick(tick);
 
+	// first debris
+	if (do_frame) {
+		player1.DropDebris();
+		player2.DropDebris();
+	}
+
+	// then animation
 	player1.ProcessMovement(gb, fps_vert, do_horz, do_vert);
 	player2.ProcessMovement(gb, fps_vert, do_horz, do_vert);
 
@@ -97,6 +104,8 @@ long TetrisGame::timer_event(ALLEGRO_EVENT event)
 
 	if (do_frame) {
 		if (is_tetris) {
+			player1.DropDebris();
+			player2.DropDebris();
 			player1.DrawFrame();
 			player2.DrawFrame();
 			//player1.DrawAllRotations(570, 70);
@@ -133,7 +142,7 @@ bool TetrisGame::ProcessGlobalKey(ALLEGRO_EVENT &event) {
 		player2.SwapMoveMethod();
 	}
 	else if (event.keyboard.keycode == ALLEGRO_KEY_F11) {
-		player2.DropDebris();
+		player2.debristimer += 100; // DropDebris();
 		//is_tetris = !is_tetris;
 		//SetWindowSize();
 	}

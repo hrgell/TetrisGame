@@ -13,14 +13,13 @@ TetrisPlayer::TetrisPlayer(AllegroResources& gb)
 	resources(BasicResources::Instance()),
 	gb(gb),
 	glidingmove(true),
-	numcols(0), numrows(0), siz(0), grid(), playing(false), score(0), left(0), top(0), opponent(NULL),
+	numcols(0), numrows(0), siz(0), debristimer(-1), grid(), shapes(), debris(), playing(false), score(0), left(0), top(0), opponent(NULL),
 	numdumps(0), toprows(8), bottomrows(5), replay_text1("PRESS F5"), replay_text2("GAME OVER"), replay_text(replay_text1)
 {
 }
 
 
 TetrisPlayer::~TetrisPlayer() {
-	grid.clear();
 }
 
 void TetrisPlayer::SetKeyboard(TetrisKeyboard* kbd) {
@@ -40,6 +39,7 @@ void TetrisPlayer::SetSize(size_t numcols, size_t numrows, long unitx, long unit
 		debris.clear();
 	if (grid.size() > 0)
 		grid.clear();
+	debristimer = -1;
 	this->unitx = unitx;
 	this->unity = unity;
 	this->numcols = numcols;
@@ -224,15 +224,13 @@ void TetrisPlayer::DrawBoundingBox(float x, float y, TetrisShape shape) {
 
 TetrisPosition TetrisPlayer::GetInitialShapePosition() {
 	float x = left + indentx + numcols / 2 * unitx - 1.8 * unitx;
-	float y = top - unity * 4 - 18;
-	y = top - unity * toprows + unity * 6;
+	float y = top - unity * toprows + unity * 6;
 	return { x , y };
 }
 
 TetrisPosition TetrisPlayer::GetInitialDebrisPosition() {
 	float x = left + indentx + (DiceRoll(numcols) - 1) * unitx;
-	float y = top - unity * 4 - 18;
-	y = top - unity * toprows + unity * 6;
+	float y = top + indenty;
 	return { x , y };
 }
 
@@ -290,14 +288,15 @@ bool TetrisPlayer::DropDebris()
 {
 	if (!playing)
 		return true;
-	//if (debris.size() < 1) {
-	for (auto idx = 0; idx < 3; ++idx) {
-		TetrisPosition point = GetInitialDebrisPosition();
-		debris.push_back(TetrisElement(resources.debris_types[0], point.first, point.second));
-	}
-	//}
-	TetrisElement& elem = debris.front();
-	return (TestCollision(elem) == COLLISION_NONE);
+	if (debristimer < 0)
+		return true;
+	if (debristimer-- % 34 != 0)
+		return true;
+	TetrisPosition point = GetInitialDebrisPosition();
+	debris.push_back(TetrisElement(resources.debris_types[0], point.first, point.second));
+	return true;
+	//TetrisElement& elem = debris.front();
+	//return (TestCollision(elem) == COLLISION_NONE);
 }
 
 TetrisSquare TetrisPlayer::GetRelativePositionOfSquare(TetrisShape shape, TetrisSquare point) {
@@ -433,7 +432,7 @@ bool TetrisPlayer::Dump(TetrisElement& elem) {
 bool TetrisPlayer::Transfer(size_t rows) {
 
 	if (rows == 1) {
-		DropDebris();
+		debristimer += 100; // DropDebris();
 	}
 	else if (rows == 2) {
 		OddShape();
@@ -592,10 +591,10 @@ long TetrisPlayer::collide_wit_debris(TetrisElement& elem, TetrisElement& elem2,
 		for (TetrisSquare& point2 : elem2.shape.rotations[elem2.rotation]) {
 			std::pair<long, long> square2 = GetSquareCoordinates(elem2, bbox2, point2);
 			// Test if the squares overlap.
-			if (!((square2.first > square.first + unitx) // right of
-				|| (square2.first + unitx < square.first) // left of
-				|| (square2.second + unity < square.second) // above
-				|| (square2.second > square.second + unity))) // below
+			if (!((square2.first > square.first + unitx - 1) // right of
+				|| (square2.first + unitx - 1 < square.first) // left of
+				|| (square2.second + unity - 1 < square.second) // above
+				|| (square2.second > square.second + unity - 1))) // below
 				return COLLISION_SQUARE;
 		}
 	}

@@ -29,6 +29,7 @@ public:
 	std::vector<ALLEGRO_COLOR> grid;
 	std::queue<TetrisElement> shapes;
 	std::deque<TetrisElement> debris;
+	long debristimer;
 	bool playing;
 	size_t score;
 	TetrisKeyboard *kbd;
