@@ -1,9 +1,9 @@
 # Build and run Tetris
 
-The project was created to evaluate Allegro and C++ and implements a 2-player tetris like game.  I decided to share the code to help others.
+The project was created to evaluate Allegro and C++ and implements a 2-player tetris like game.   I decided to share the code to help others.  Creating the project from scratch is descrbied below.
 
 ## Source 
-The folder named [Tetris](Tetris) contains the source code for the project.
+You can pull the entire git project or you can pull the essential [source](source) files. The essential files are the C++ files needed to create the project from scratch  (.cpp, .h, .rc).  Create the project from scratch to avoid downloading too many file types. 
 
 ### Souce Listing
 
@@ -69,11 +69,11 @@ Name the project.
 
 ![Image](img/NameProject.png)
 
-Create the project.
+Create the project. Click "Create".
 
 ![Image](img/ProjectCreated.png)
 
-Confirm any prompt that appears.
+Confirm any prompt that appears.  When done the new project should look as shown above.
 
 ## Add Allegro
 Start the NuGet package manager.
@@ -88,7 +88,6 @@ Type allegro in the search field then select "Allegro by Allegro Developers v5",
 
 ![Image](img/SearchAndInstall.png)
 
-
 Installing allegro may take some time. You might be asked to confirm the installation.
 
 ![Image](img/WaitForInstall.png)
@@ -96,7 +95,7 @@ Installing allegro may take some time. You might be asked to confirm the install
 Wait until the installation process finishes as shown in the output window.
 
 ## Configure Allegro
-View the properties of the project. Right click the project and selecting Properties.
+View the properties of the project. Right click the project and select "Properties".
 
 ![Image](img/ProjectProperties.png)
 
@@ -117,7 +116,7 @@ You might also want to disable the linker warning about missing .pdb files
 ## Copy the [source](source) code
 You can use the command line to copy the source files to the project folder or the guide below.
 
-Open File Explorer and navigate to the source folder and copy all the files in it.
+Open File Explorer and navigate to the [source](source) folder and copy all the files in it.
 
 ![Image](img/SelectFilesToCopy.png)
 
@@ -135,7 +134,7 @@ Then paste the source code files with Ctrl-V and overwrite existing files.
 
 ![Image](img/ReplaceOrSkip.png)
 
-Confirm if Visual Studio asks you to reload any files.
+Confirm if Visual Studio asks you to overwrite or reload any files.
 
 Then close the File Explorer.
 
@@ -178,7 +177,19 @@ Player 2 key bindings.
             - RIGHT  Move Right.
             - UP     Rotate.
 
-## Comments
+## Game mechanics
+We know the rules of tetris.
+We must prevent the pit from becoming full as pieces drop into it.
+We steer the falling pieces and try to make them fit to clear rows.
+We get a bonus when we clear rows by dropping a piece.
+
+If we clear more than one row by dropping a piece then:
+            = the bonus gained is exponential to the amount of rows cleared.
+            - the opponent gets rows inserted at the bottom of his pit.
+            - some debris will drop on the opponent if we cleared 2 rows.
+            - the opponents next piece becomes an L shape with 5 squres if we cleared 3 rows. ![Image](img/OddPiece.png)
+
+## Issues
 The game needs better keyboard handling, ie keyboard strokes should be stored in a queue with all SHIFT info.
 
 Rotation needs to be made less strict and refactored with they keyboard code.
