@@ -13,7 +13,7 @@ TetrisPlayer::TetrisPlayer(AllegroResources& gb)
 	resources(BasicResources::Instance()),
 	gb(gb),
 	glidingmove(true),
-	numcols(0), numrows(0), siz(0), debristimer(-1), grid(), shapes(), debris(), playing(false), score(0), left(0), top(0), opponent(NULL),
+	numcols(0), numrows(0), siz(0), debristimer(-1), grid(), shapes(), debris(), explosions(), playing(false), score(0), left(0), top(0), opponent(NULL),
 	numdumps(0), toprows(8), bottomrows(5), replay_text1("PRESS F5"), replay_text2("GAME OVER"), replay_text(replay_text1)
 {
 }
@@ -37,6 +37,8 @@ void TetrisPlayer::SetSize(size_t numcols, size_t numrows, long unitx, long unit
 	score = 0;
 	if (debris.size() > 0)
 		debris.clear();
+	if (explosions.size() > 0)
+		explosions.clear();
 	if (grid.size() > 0)
 		grid.clear();
 	debristimer = -1;
@@ -218,6 +220,27 @@ void TetrisPlayer::DrawSquare(float x, float y, ALLEGRO_COLOR color) {
 	//al_draw_line(x + direction + d / 2, y1 + dy, x + direction + d / 2, y1 + dy + d, resources.color_white, 1);
 }
 
+bool TetrisPlayer::DrawExplosion(TetrisElement& elem, float dx, float dy) {
+	if (elem.explosion_age > 100)
+		return false;
+	TetrisSquares coordinates = elem.shape.GetRotation(elem.rotation);
+	for (TetrisSquare& point : coordinates) {
+		float x = elem.left + unitx * point.first;
+		float y = elem.top + elem.shape.dimensions * unity - unity * (point.second + 1);
+		//DrawSquare(x + dx, y + dy, elem.shape.color);
+		auto siz = unitx / 2;
+		auto radius = unitx / 2;	
+		long radius2 = 5 - elem.explosion_age / 10;
+		if (radius2 < 0)
+			radius = 1;
+		else if (radius2 < radius)
+			radius = radius2;
+		al_draw_filled_circle(x + dx + siz, y + dy + siz, radius, { 0.7, 0.9, 0.84 });
+	}
+	if (gb.developing)
+		DrawBoundingBox(elem.left + dx, elem.top + dy, elem.shape);
+}
+
 void TetrisPlayer::DrawBoundingBox(float x, float y, TetrisShape shape) {
 	al_draw_rectangle(x - 1, y - 1, x + unitx * shape.dimensions + 1, y + unity * shape.dimensions + 1, shape.color, 0);
 }
@@ -350,6 +373,17 @@ bool TetrisPlayer::DrawFrame()
 	// draw debris
 	for (auto& elem : debris)
 		DrawShape(elem);
+	// draw explosions
+	std::stack<size_t> positions;
+	size_t pos = 0;
+	for (auto& elem : explosions) {
+		if (!DrawExplosion(elem, 0, 0))
+		//if (!DrawExplosion(elem.top, elem.left, { 0.9, 0.9, 0.9 }, elem.explosion_age))
+				positions.push(pos);
+		elem.explosion_age++;
+		++pos;
+	}
+	DeleteFromDeque(explosions, positions);
 	// draw the info about the game state
 	DrawText();
 	return true;
@@ -748,11 +782,24 @@ bool TetrisPlayer::DoVerticalMove(TetrisElement& elem, float fps)
 	return true;
 }
 
+// delete debris we don't need.
+// we assume the values on the stack gets lower each time we pop a value, otherwise using debris.erase() will not work.
+void TetrisPlayer::DeleteFromDeque(std::deque<TetrisElement>& deq, std::stack<size_t>& positions)
+{
+	while (!positions.empty()) {
+		auto idx = positions.top();
+		//DebugWriteMsg(string_format("\t\tTOP: %u / %u\r\n", (USHORT)idx, (USHORT)deq.size()));
+		deq.erase(deq.begin() + idx);
+		positions.pop();
+	}
+}
+
 bool TetrisPlayer::DoVerticalDebrisMove()
 {
 	std::stack<size_t> positions;
 	size_t pos = 0;
 	for (auto& debr : debris) {
+		++pos;
 		bool touches = false;
 		long collision = MoveDown(debr);
 		if (collision != COLLISION_NONE) {
@@ -765,18 +812,16 @@ bool TetrisPlayer::DoVerticalDebrisMove()
 				touches = true;
 			}
 		}
-		if (collide_wit_debris(shapes.front(), debr, 0, 0) != COLLISION_NONE)
+		if (collide_wit_debris(shapes.front(), debr, 0, 0) != COLLISION_NONE) {
+			explosions.push_back(debr);
 			touches = true;
-		if (touches)
-			positions.push(pos);
-		++pos;
+		}
+		if (touches) {
+			positions.push(pos - 1);
+		}
 	}
-	while (!positions.empty()) {
-		auto idx = positions.top();
-		//DebugWriteMsg(string_format("\t\tTOP: %u / %u\r\n", (USHORT)idx, (USHORT)debris.size()));
-		debris.erase(debris.begin() + idx);
-		positions.pop();
-	}
+
+	DeleteFromDeque(debris, positions);
 	return true;
 }
 

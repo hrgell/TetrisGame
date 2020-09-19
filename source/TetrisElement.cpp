@@ -5,17 +5,17 @@
 
 
 TetrisElement::TetrisElement()
-	: shape(), left(0), top(0), rotation(0), waiting(0), age(0)
+	: shape(), left(0), top(0), rotation(0), waiting(0), age(0), explosion_age(0)
 {
 }
 
 TetrisElement::TetrisElement(TetrisShape shape, float left, float top, size_t rotation)
-	: shape(shape), left(left), top(top), rotation(rotation), waiting(0), age(0)
+	: shape(shape), left(left), top(top), rotation(rotation), waiting(0), age(0), explosion_age(0)
 {
 }
 
 TetrisElement::TetrisElement(TetrisShape shape, float left, float top)
-	: shape(shape), left(left), top(top), rotation(0), waiting(0), age(0)
+	: shape(shape), left(left), top(top), rotation(0), waiting(0), age(0), explosion_age(0)
 {
 	//rotation = dice_roll(shape.rotations.size()) - 1;
 }

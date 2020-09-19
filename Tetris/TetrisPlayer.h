@@ -3,6 +3,7 @@
 #include "TetrisElement.h"
 #include "AllegroResources.h"
 #include "TetrisKeyboard.h"
+#include <stack>
 
 typedef std::pair<float, float> TetrisPosition;
 enum TetrisGameCollision { COLLISION_NONE = 0, COLLISION_LEFT = 1, COLLISION_RIGHT = 2, COLLISION_UP = 4, COLLISION_DOWN = 8, COLLISION_SQUARE = 16 };
@@ -29,6 +30,7 @@ public:
 	std::vector<ALLEGRO_COLOR> grid;
 	std::queue<TetrisElement> shapes;
 	std::deque<TetrisElement> debris;
+	std::deque<TetrisElement> explosions;
 	long debristimer;
 	bool playing;
 	size_t score;
@@ -58,6 +60,7 @@ public:
 	size_t Earn(size_t num);
 	void DrawText();
 	void DrawSquare(float x, float y, ALLEGRO_COLOR color);
+	bool DrawExplosion(TetrisElement& elem, float dx = 0, float dy = 0);
 	void DrawBoundingBox(float x, float y, TetrisShape shape);
 	bool DrawGrid();
 	TetrisPosition GetInitialShapePosition();
@@ -78,6 +81,7 @@ public:
 	bool DoHorizontalMoveV2(TetrisElement & elem);
 	bool DoHorizontalMoveV1(TetrisElement & elem);
 	bool DoVerticalMove(TetrisElement & elem, float fps);
+	void DeleteFromDeque(std::deque<TetrisElement>& deq, std::stack<size_t>& positions);
 	bool DoVerticalDebrisMove();
 	void ProcessImmediateKeyboardInput();
 	float CopyPieceToGrid(TetrisElement& elem);
