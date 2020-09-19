@@ -13,7 +13,7 @@ public:
 	// How long we must wait before the element MUST move down or be dumped.
 	size_t waiting;
 	size_t age;
-	size_t explosion_age;
+	long explosion_age;
 public:
 	TetrisElement();
 	TetrisElement(TetrisShape shape, float left, float top, size_t rotation);

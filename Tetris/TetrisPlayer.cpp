@@ -239,6 +239,7 @@ bool TetrisPlayer::DrawExplosion(TetrisElement& elem, float dx, float dy) {
 	}
 	if (gb.developing)
 		DrawBoundingBox(elem.left + dx, elem.top + dy, elem.shape);
+	elem.explosion_age++;
 	return true;
 }
 
@@ -363,7 +364,7 @@ bool TetrisPlayer::DrawFrame()
 	DrawGameBoard();
 	bool isempty = DrawGrid();
 	// draw the falling piece controled by the player
-	if (playing || !isempty)
+	if (playing || !isempty) 
 		DrawShape(shapes.front());
 	// draw the hint for the next piece
 	// todo move calculation dx,dy - howto center the piece elsewhere
@@ -379,9 +380,7 @@ bool TetrisPlayer::DrawFrame()
 	size_t pos = 0;
 	for (auto& elem : explosions) {
 		if (!DrawExplosion(elem, 0, 0))
-		//if (!DrawExplosion(elem.top, elem.left, { 0.9, 0.9, 0.9 }, elem.explosion_age))
-				positions.push(pos);
-		elem.explosion_age++;
+			positions.push(pos);
 		++pos;
 	}
 	DeleteFromDeque(explosions, positions);
