@@ -230,7 +230,7 @@ bool TetrisPlayer::DrawExplosion(TetrisElement& elem, float dx, float dy) {
 		//DrawSquare(x + dx, y + dy, elem.shape.color);
 		auto siz = unitx / 2;
 		auto radius = unitx / 2;	
-		long radius2 = 5 - elem.explosion_age / 10;
+		long radius2 = 5L - elem.explosion_age / 10L;
 		if (radius2 < 0)
 			radius = 1;
 		else if (radius2 < radius)
@@ -239,6 +239,7 @@ bool TetrisPlayer::DrawExplosion(TetrisElement& elem, float dx, float dy) {
 	}
 	if (gb.developing)
 		DrawBoundingBox(elem.left + dx, elem.top + dy, elem.shape);
+	return true;
 }
 
 void TetrisPlayer::DrawBoundingBox(float x, float y, TetrisShape shape) {
