@@ -9,7 +9,7 @@ extern bool FileExists(std::string &filename);
 extern bool FolderExists(std::string &foldername);
 extern size_t WriteFile(const char *filename, const char *mode, const char *data, const size_t siz);
 extern std::string GetAppdata();
-extern void Extract(size_t id, std::string filename, const char *typeinfo);
+extern long Extract(size_t id, std::string filename, const char *typeinfo);
 extern long ExtractNE(size_t id, std::string filename, const char *typeinfo);
 extern void DisplayFrame(); // move the method elsewhere
 extern int ErrMsg(const char *msg, int status); // move the method elsewhere

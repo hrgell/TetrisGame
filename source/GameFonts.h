@@ -10,6 +10,7 @@ public:
 	AllegroFont header1;
 	AllegroFont header2;
 	AllegroFont normal;
+	AllegroFont small;
 	AllegroFont fixed;
 	GameFonts();
 	~GameFonts();

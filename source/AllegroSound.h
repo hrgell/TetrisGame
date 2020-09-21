@@ -18,6 +18,7 @@ public:
 	AllegroSound(std::string filename, ALLEGRO_PLAYMODE flag = ALLEGRO_PLAYMODE_ONCE);
 	~AllegroSound();
 	void Load();
+	void SetGain(float val);
 	void Play();
 	void Stop();
 	bool IsPlaying();

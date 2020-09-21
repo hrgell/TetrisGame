@@ -93,23 +93,20 @@ long TetrisGame::timer_event(ALLEGRO_EVENT event)
 	}
 
 	if (do_grid) {
-		player1.RemoveSquare();
-		player2.RemoveSquare();
-
-		static long check = 0; // toto: lookat: this cant be static
-		if (gb.audio.PlayTheme(check != 0))
-			if (++check == 5)
-				check = 0;
+		//player1.RemoveSquareWhenGameIsOver();
+		//player2.RemoveSquareWhenGameIsOver();
+		gb.audio.PlayTheme();
 	}
 
 	if (do_frame) {
 		if (is_tetris) {
-			player1.DropDebris();
-			player2.DropDebris();
 			player1.DrawFrame();
 			player2.DrawFrame();
 			//player1.DrawAllRotations(570, 70);
-			gb.fonts.header2.Draw(resources.color_white, left + (numcols + 2) * gb.monitor.unitx + player1.indentx, top - gb.monitor.unity * (player1.toprows + 2) - player1.indenty, ALLEGRO_ALIGN_CENTER, "Press F5 to Restart");
+			auto f5x = left + (numcols + 2) * gb.monitor.unitx + player1.indentx;
+			auto f5y = top - gb.monitor.unity * (player1.toprows + 3);
+			gb.fonts.header2.Draw(resources.color_white, f5x, f5y, ALLEGRO_ALIGN_CENTER, "Press F5 to Restart");
+			gb.fonts.small.Draw(resources.color_white, f5x, f5y + 22, ALLEGRO_ALIGN_CENTER, "Press M to toggle Music");
 			if (false) {
 				std::string rst = player1.ToString();
 				gb.fonts.header1.Draw(resources.color_white, gb.monitor.unitx * 30, gb.monitor.unity, ALLEGRO_ALIGN_LEFT, rst.c_str());
