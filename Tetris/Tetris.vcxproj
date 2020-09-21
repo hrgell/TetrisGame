@@ -234,6 +234,18 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="TETRISMUSIC.wav" />
+    <Media Include="TETRISMUSIC10.wav" />
+    <Media Include="TETRISMUSIC2.wav" />
+    <Media Include="TETRISMUSIC3.wav" />
+    <Media Include="TETRISMUSIC4.wav" />
+    <Media Include="TETRISMUSIC5.wav" />
+    <Media Include="TETRISMUSIC6.wav" />
+    <Media Include="TETRISMUSIC7.wav" />
+    <Media Include="TETRISMUSIC8.wav" />
+    <Media Include="TETRISMUSIC9.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\AllegroDeps.1.11.0\build\native\AllegroDeps.targets" Condition="Exists('..\packages\AllegroDeps.1.11.0\build\native\AllegroDeps.targets')" />

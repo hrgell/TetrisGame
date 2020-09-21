@@ -40,6 +40,11 @@ void AllegroSound::Load() {
 	al_attach_sample_instance_to_mixer(sample_instance, al_get_default_mixer());
 }
 
+void AllegroSound::SetGain(float val) {
+	if (sample_instance != NULL)
+		al_set_sample_instance_gain(sample_instance, val);
+}
+
 void AllegroSound::Play() {
 	if (sample_instance != NULL)
 		al_play_sample_instance(sample_instance);

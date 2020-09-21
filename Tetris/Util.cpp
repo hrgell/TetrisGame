@@ -18,7 +18,7 @@ void DebugWriteMsg(const wstring arg) {
 	wostringstream oss;
 	oss << "---- ";
 	oss << arg;
-	oss << " ----";
+	//oss << " ----";
 	oss << std::endl;
 	OutputDebugStringW(oss.str().c_str());
 }
@@ -27,12 +27,12 @@ void DebugWriteMsg(const string arg) {
 	wostringstream oss;
 	oss << "---- ";
 	oss << arg.c_str();
-	oss << " ----";
+	//oss << " ----";
 	oss << std::endl;
 	OutputDebugStringW(oss.str().c_str());
 }
 
-void DebugWriteMsg(wostringstream &oss) {
+void DebugWriteMsg(wostringstream& oss) {
 	DebugWriteMsg(oss.str());
 }
 
@@ -40,19 +40,19 @@ template <class T> void DebugWriteMsg(const T arg) {
 	DebugWriteMsg(to_string(arg));
 }
 
-bool FileExists(std::string &filename) {
+bool FileExists(std::string& filename) {
 	struct stat fs;
 	return (stat(filename.c_str(), &fs) == 0);
 }
 
-bool FolderExists(std::string &foldername)
+bool FolderExists(std::string& foldername)
 {
 	struct stat fs;
 	stat(foldername.c_str(), &fs);
 	return (fs.st_mode & S_IFDIR);
 }
 
-size_t WriteFile(const char *filename, const char *mode, const char *data, const size_t siz)
+size_t WriteFile(const char* filename, const char* mode, const char* data, const size_t siz)
 {
 	size_t written = 0;
 	FILE* file;
@@ -76,7 +76,7 @@ inline string GetAppdata()
 		return path;
 	const size_t siz = BUFSIZ;
 	size_t len = siz;
-	char *val;
+	char* val;
 	errno_t err = _dupenv_s(&val, &len, "APPDATA");
 	if (err != 0)
 		return "";
@@ -92,38 +92,54 @@ inline string GetAppdata()
 }
 
 // Extract the embedded data identified by [id] and [typeinfo] to the specified file [filename].
-void Extract(size_t id, std::string filename, const char *typeinfo)
+long Extract(size_t id, std::string filename, const char* typeinfo)
 {
-	if (id != 0) {
-		// According to MSDN, the code below does not leak any memory.
-		// The handles below refer to static data, so no "frees" are needed.
-		if (filename.empty())
-			throw std::runtime_error("Failed to extract file, filename not specified.");
-		if (FileExists(filename))
-			return;
-		HMODULE module = GetModuleHandleA(nullptr); // the module of this process
-		if (module == 0)
-			throw std::runtime_error("Failed to load module.");
-		HRSRC res = FindResourceA(module, MAKEINTRESOURCEA(id), typeinfo);
-		if (res == nullptr)
-			throw std::runtime_error(("Failed to find resource. " + filename + " " + to_string(id)).c_str());
-		HGLOBAL ptr = LoadResource(module, res);
-		if (ptr == NULL)
-			throw std::runtime_error("Failed to load resource.");
-		DWORD siz = SizeofResource(module, res);
-		if (siz == 0)
-			throw std::runtime_error("Failed to load size of resource.");
-		LPVOID src = LockResource(ptr);
-		if (src == NULL)
-			throw std::runtime_error("Failed to access resource.");
-		WriteFile(filename.c_str(), "wb", static_cast<char *>(src), siz * sizeof(char));
+	//DebugWriteMsg(string_format("id: %u,  filename == %s", (USHORT)id, filename.c_str()));
+	if (id == 0)
+		return 0;
+	/* According to MSDN the acquisition of the handles below does not leak any
+	   memory. The handles below refer to static data, so no "frees" are needed. */
+	if (filename.empty()) {
+		DebugWriteMsg(string_format("Failed to extract file, filename not specified: %u", (USHORT)id));
+		return 1;
 	}
-	if (!FileExists(filename))
-		throw std::runtime_error("Failed to write file.");
+	if (FileExists(filename))
+		return 0;
+	HMODULE module = GetModuleHandleA(nullptr);
+	if (module == 0) {
+		DebugWriteMsg(string_format("%s", "Failed to load module: %u: %s", (USHORT)id, filename.c_str()));
+		return 2;
+	}
+	HRSRC res = FindResourceA(module, MAKEINTRESOURCEA(id), typeinfo);
+	if (res == nullptr) {
+		DebugWriteMsg(string_format("Failed to find resource: %u: %s", (USHORT)id, filename.c_str()));
+		return 3;
+	}
+	HGLOBAL ptr = LoadResource(module, res);
+	if (ptr == nullptr) {
+		DebugWriteMsg(string_format("%s", "Failed to load resource: %u: %s", (USHORT)id, filename.c_str()));
+		return 4;
+	}
+	DWORD siz = SizeofResource(module, res);
+	if (siz == 0) {
+		DebugWriteMsg(string_format("%s", "Failed to load size of resource: %u: %s", (USHORT)id, filename.c_str()));
+		return 5;
+	}
+	LPVOID src = LockResource(ptr);
+	if (src == nullptr) {
+		DebugWriteMsg(string_format("%s", "Failed to access resource: %u: %s", (USHORT)id, filename.c_str()));
+		return 6;
+	}
+	WriteFile(filename.c_str(), "wb", static_cast<char*>(src), siz * sizeof(char));
+	if (!FileExists(filename)) {
+		DebugWriteMsg(string_format("%s", "Failed to write file: %u: %s", (USHORT)id, filename.c_str()));
+		return 7;
+	}
+	return 0;
 } // method
 
 // Extract the embedded data identified by [id] and [typeinfo] to the specified file [filename].
-long ExtractNE(size_t id, std::string filename, const char *typeinfo)
+long ExtractNE(size_t id, std::string filename, const char* typeinfo)
 {
 	if (id == 0)
 		return 0; // ok
@@ -137,14 +153,14 @@ long ExtractNE(size_t id, std::string filename, const char *typeinfo)
 		return -3;
 	HGLOBAL ptr = LoadResource(module, res);
 	if (ptr == NULL)
-		return -4; 
+		return -4;
 	DWORD siz = SizeofResource(module, res);
 	if (siz == 0)
 		return -5;
 	LPVOID src = LockResource(ptr);
 	if (src == NULL)
 		return -6;
-	WriteFile(filename.c_str(), "wb", static_cast<char *>(src), siz * sizeof(char));
+	WriteFile(filename.c_str(), "wb", static_cast<char*>(src), siz * sizeof(char));
 	return 0;
 } // method
 
@@ -153,7 +169,7 @@ void DisplayFrame() {
 	al_clear_to_color(BasicResources::Instance().color_clear_to);
 }
 
-int ErrMsg(const char *msg, int status) {
+int ErrMsg(const char* msg, int status) {
 	al_show_native_message_box(nullptr, "Error", "Error", msg, nullptr, ALLEGRO_MESSAGEBOX_ERROR);
 	return status;
 }
@@ -201,7 +217,7 @@ BOOL EnumTypesFunc(HMODULE hModule, LPTSTR lpType, LONG lParam)
 	else
 	{
 #pragma warning( suppress: 4302 )
-		DebugWriteMsg(string_format("Type: %u", USHORT (lpType)));
+		DebugWriteMsg(string_format("Type: %u", USHORT(lpType)));
 	}
 	EnumResourceNames(hModule, lpType, (ENUMRESNAMEPROC)EnumNamesFunc, 0);
 	return TRUE;

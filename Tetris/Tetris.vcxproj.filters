@@ -154,4 +154,36 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="TETRISMUSIC.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC2.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC3.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC4.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC5.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC6.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC7.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC8.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC9.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="TETRISMUSIC10.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
 </Project>

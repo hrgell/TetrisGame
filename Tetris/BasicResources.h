@@ -34,6 +34,13 @@ public:
 	// music
 	std::string wavname_theme1;
 	std::string wavname_theme2;
+	std::string wavname_theme3;
+	std::string wavname_theme4;
+	std::string wavname_theme5;
+	std::string wavname_theme6;
+	std::string wavname_theme7;
+	std::string wavname_theme8;
+	std::string wavname_theme9;
 	std::string wavname_tada;
 	std::vector<TetrisShape> shape_types;
 	std::vector<TetrisShape> oddshape_types;

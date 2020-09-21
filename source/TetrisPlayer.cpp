@@ -189,7 +189,7 @@ bool TetrisPlayer::DrawGrid() {
 	return isempty;
 }
 
-bool TetrisPlayer::RemoveSquare() {
+bool TetrisPlayer::RemoveSquareWhenGameIsOver() {
 	if (playing)
 		return false;
 	if (numrows == 0)

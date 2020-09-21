@@ -8,6 +8,7 @@ GameFonts::GameFonts()
 	header1(resources.fontname_arial, 20),
 	header2(resources.fontname_verdana, 16),
 	normal(resources.fontname_arial, 10),
+	small(resources.fontname_verdana, 9),
 	fixed(resources.fontname_fixed, 16)
 {
 	if (big.font != NULL) {

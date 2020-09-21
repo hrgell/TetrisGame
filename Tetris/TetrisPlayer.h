@@ -105,7 +105,7 @@ public:
 	long TestCollisionCurent();
 	long TestCollision(TetrisElement& elem);
 	long MoveDown(TetrisElement &elem);
-	bool RemoveSquare();
+	bool RemoveSquareWhenGameIsOver();
 	
 };
 

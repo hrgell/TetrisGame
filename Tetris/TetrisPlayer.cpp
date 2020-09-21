@@ -57,6 +57,7 @@ void TetrisPlayer::SetSize(size_t numcols, size_t numrows, long unitx, long unit
 		return;
 	for (size_t idx = 0; idx < siz; ++idx)
 		grid.push_back(resources.color_default);
+
 }
 
 ALLEGRO_COLOR TetrisPlayer::Get(size_t row, size_t col) //xxx
@@ -189,7 +190,7 @@ bool TetrisPlayer::DrawGrid() {
 	return isempty;
 }
 
-bool TetrisPlayer::RemoveSquare() {
+bool TetrisPlayer::RemoveSquareWhenGameIsOver() {
 	if (playing)
 		return false;
 	if (numrows == 0)
@@ -364,7 +365,7 @@ bool TetrisPlayer::DrawFrame()
 	DrawGameBoard();
 	bool isempty = DrawGrid();
 	// draw the falling piece controled by the player
-	if (playing || !isempty) 
+	if (playing)
 		DrawShape(shapes.front());
 	// draw the hint for the next piece
 	// todo move calculation dx,dy - howto center the piece elsewhere

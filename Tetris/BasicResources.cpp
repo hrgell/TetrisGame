@@ -28,6 +28,13 @@ BasicResources::BasicResources()
 	// music
 	wavname_theme1(appdata + "Theme1.wav"),
 	wavname_theme2(appdata + "Theme2.wav"),
+	wavname_theme3(appdata + "Theme3.wav"),
+	wavname_theme4(appdata + "Theme4.wav"),
+	wavname_theme5(appdata + "Theme5.wav"),
+	wavname_theme6(appdata + "Theme6.wav"),
+	wavname_theme7(appdata + "Theme7.wav"),
+	wavname_theme8(appdata + "Theme8.wav"),
+	wavname_theme9(appdata + "Theme9.wav"),
 	wavname_tada("C:\\Windows\\media\\tada.wav"),
 	shape_types({
 		{ 0, 4, {{0,2}, {1,2}, {2,2}, {3,2} }, color_1 },
