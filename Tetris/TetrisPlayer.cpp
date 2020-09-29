@@ -56,8 +56,20 @@ void TetrisPlayer::SetSize(size_t numcols, size_t numrows, long unitx, long unit
 	if (siz == 0)
 		return;
 	for (size_t idx = 0; idx < siz; ++idx)
-		grid.push_back(resources.color_default);
+		grid.push_back(GridCell(resources.color_default));
 
+}
+
+GridCell TetrisPlayer::GetCell(size_t row, size_t col) //xxx
+{
+	size_t pos = row * numcols + col;
+	return grid[pos];
+}
+
+void TetrisPlayer::SetCell(size_t row, size_t col, GridCell val) //xxx
+{
+	size_t pos = row * numcols + col;
+	grid[pos] = val;
 }
 
 ALLEGRO_COLOR TetrisPlayer::Get(size_t row, size_t col) //xxx
@@ -65,7 +77,7 @@ ALLEGRO_COLOR TetrisPlayer::Get(size_t row, size_t col) //xxx
 	if (row >= numrows || col >= numcols)
 		return resources.color_default;
 	size_t pos = row * numcols + col;
-	return grid[pos];
+	return grid[pos].color;
 }
 
 void TetrisPlayer::Set(size_t row, size_t col, ALLEGRO_COLOR val)
@@ -73,7 +85,7 @@ void TetrisPlayer::Set(size_t row, size_t col, ALLEGRO_COLOR val)
 	if (row >= numrows || col >= numcols)
 		return;
 	size_t pos = row * numcols + col;
-	grid[pos] = val;
+	grid[pos].color = val;
 }
 
 bool TetrisPlayer::IsDefault(ALLEGRO_COLOR color) {
@@ -82,11 +94,26 @@ bool TetrisPlayer::IsDefault(ALLEGRO_COLOR color) {
 
 bool TetrisPlayer::RowIsFull(size_t row) {
 	for (size_t col = 0; col < numcols; ++col) {
-		ALLEGRO_COLOR color = Get(row, col);
-		if (IsDefault(color))
+		size_t pos = row * numcols + col; 
+		if (IsDefault(grid[pos].color))
 			return false;
 	}
+
+	//for (size_t col = 0; col < numcols; ++col) {
+	//	size_t pos = row * numcols + col;
+	//	if(grid[pos].explosion_age < 100)
+	//		grid[pos].explosion_age++;
+	//}
+
 	return true;
+}
+
+void TetrisPlayer::ExplodeRow(size_t row) {
+	for (size_t col = 0; col < numcols; ++col) {
+		size_t pos = row * numcols + col;
+		if(grid[pos].explosion_age < 100)
+			grid[pos].explosion_age++;
+	}
 }
 
 bool TetrisPlayer::RowIsEmpty(size_t row) {
@@ -114,6 +141,7 @@ bool TetrisPlayer::Collapse(TetrisPlayer* grid) {
 			++completed_rows;
 			continue;
 		}
+		// ExplodeRow(row);
 		if (row != dst) {
 			for (size_t col = 0; col < numcols; ++col) {
 				ALLEGRO_COLOR color = (row == 0) ? resources.color_default : Get(row, col);
@@ -177,14 +205,28 @@ bool TetrisPlayer::DrawGrid() {
 		gb.audio.PlayNice();
 	for (size_t row = 0; row < numrows; ++row) {
 		for (size_t col = 0; col < numcols; ++col) {
-			ALLEGRO_COLOR color = Get(row, col);
-			if (IsDefault(color))
+			size_t pos = row * numcols + col;
+			GridCell& cell = grid[pos];
+			if (IsDefault(cell.color))
 				continue;
 			isempty = false;
 			float x = left + indentx + col * unitx;
 			float y = top + indenty + row * unity;
 			//debug(string_format("--- row %u col %u row %.2f col %.2f", row, column, x , y1));
-			DrawSquare(x, y, color);
+			// Use this to slowly explode pieces
+			if (cell.explosion_age == 0) {
+				DrawSquare(x, y, cell.color);
+			} else if (cell.explosion_age < 100) {
+				DrawCircle(x, y, cell.explosion_age);
+				cell.explosion_age++;
+				if (cell.explosion_age == 100) {
+					grid[pos].color = resources.color_default;
+					cell.explosion_age = 0;
+				}
+			}
+			else {
+				DrawSquare(x, y, cell.color);
+			}
 		}
 	}
 	return isempty;
@@ -221,6 +263,17 @@ void TetrisPlayer::DrawSquare(float x, float y, ALLEGRO_COLOR color) {
 	//al_draw_line(x + direction + d / 2, y1 + dy, x + direction + d / 2, y1 + dy + d, resources.color_white, 1);
 }
 
+void TetrisPlayer::DrawCircle(float x, float y, long age) {
+	auto siz = unitx / 2;
+	auto radius = unitx / 2;
+	long radius2 = 5L - age / 10L;
+	if (radius2 < 0)
+		radius = 1;
+	else if (radius2 < radius)
+		radius = radius2;
+	al_draw_filled_circle(x + siz, y + siz, radius, { 0.7, 0.9, 0.84 });
+}
+
 bool TetrisPlayer::DrawExplosion(TetrisElement& elem, float dx, float dy) {
 	if (elem.explosion_age > 100)
 		return false;
@@ -228,15 +281,7 @@ bool TetrisPlayer::DrawExplosion(TetrisElement& elem, float dx, float dy) {
 	for (TetrisSquare& point : coordinates) {
 		float x = elem.left + unitx * point.first;
 		float y = elem.top + elem.shape.dimensions * unity - unity * (point.second + 1);
-		//DrawSquare(x + dx, y + dy, elem.shape.color);
-		auto siz = unitx / 2;
-		auto radius = unitx / 2;	
-		long radius2 = 5L - elem.explosion_age / 10L;
-		if (radius2 < 0)
-			radius = 1;
-		else if (radius2 < radius)
-			radius = radius2;
-		al_draw_filled_circle(x + dx + siz, y + dy + siz, radius, { 0.7, 0.9, 0.84 });
+		DrawCircle(x + dx, y + dy, elem.explosion_age);
 	}
 	if (gb.developing)
 		DrawBoundingBox(elem.left + dx, elem.top + dy, elem.shape);

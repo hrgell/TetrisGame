@@ -190,6 +190,7 @@
     <ClInclude Include="GameAudio.h" />
     <ClInclude Include="GameFonts.h" />
     <ClInclude Include="GameMonitor.h" />
+    <ClInclude Include="GridCell.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scope.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="GameAudio.cpp" />
     <ClCompile Include="GameFonts.cpp" />
     <ClCompile Include="GameMonitor.cpp" />
+    <ClCompile Include="GridCell.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Scope.cpp" />
     <ClCompile Include="stdafx.cpp" />

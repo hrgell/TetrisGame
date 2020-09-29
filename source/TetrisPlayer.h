@@ -3,6 +3,7 @@
 #include "TetrisElement.h"
 #include "AllegroResources.h"
 #include "TetrisKeyboard.h"
+#include "GridCell.h"
 #include <stack>
 
 typedef std::pair<float, float> TetrisPosition;
@@ -27,7 +28,7 @@ public:
 	size_t numcols;
 	size_t numrows;
 	size_t siz;
-	std::vector<ALLEGRO_COLOR> grid;
+	std::vector<GridCell> grid;
 	std::queue<TetrisElement> shapes;
 	std::deque<TetrisElement> debris;
 	std::deque<TetrisElement> explosions;
@@ -51,15 +52,19 @@ public:
 	void SetKeyboard(TetrisKeyboard *kbd);
 	void SetSize(size_t numcols, size_t numrows, long sizex, long sizey);
 	void SetPosition(float left, float top);
+	GridCell GetCell(size_t row, size_t col);
+	void SetCell(size_t row, size_t col, GridCell val);
 	ALLEGRO_COLOR Get(size_t row, size_t col);
 	void Set(size_t row, size_t col, ALLEGRO_COLOR val);
 	bool IsDefault(ALLEGRO_COLOR val);
 	bool RowIsFull(size_t row);
+	void ExplodeRow(size_t row);
 	bool RowIsEmpty(size_t row);
 	bool Collapse(TetrisPlayer *grid = NULL);
 	size_t Earn(size_t num);
 	void DrawText();
 	void DrawSquare(float x, float y, ALLEGRO_COLOR color);
+	void DrawCircle(float x, float y, long age);
 	bool DrawExplosion(TetrisElement& elem, float dx = 0, float dy = 0);
 	void DrawBoundingBox(float x, float y, TetrisShape shape);
 	bool DrawGrid();
