@@ -32,6 +32,8 @@ The essential files are the C++ files needed to create the project from scratch 
  - GameFonts.h
  - GameMonitor.cpp
  - GameMonitor.h
+ - GridCell.cpp
+ - GridCell.h
  - Main.cpp
  - Main.h
  - Resource.h
