@@ -504,7 +504,6 @@ bool TetrisPlayer::Dump(TetrisElement& elem) {
 		Earn(1 + offset);
 	}
 	NextShape();
-
 	return (collide(shapes.front(), 0, 0) == COLLISION_NONE);
 }
 
@@ -847,24 +846,29 @@ bool TetrisPlayer::DoVerticalDebrisMove()
 	for (auto& debr : debris) {
 		++pos;
 		bool touches = false;
-		long collision = MoveDown(debr);
-		if (collision != COLLISION_NONE) {
-			SyncWithGrid(debr);
+		bool explodes = false;
+		long collision = collide(debr, 0, 0);
+		if (collision == COLLISION_NONE) {
 			collision = MoveDown(debr);
 			if (collision != COLLISION_NONE) {
-				gb.audio.PlayMove();
-				// todo we may fail if dump fails.
-				CopyPieceToGrid(debr);
-				touches = true;
+				SyncWithGrid(debr);
+				collision = MoveDown(debr);
+				if (collision != COLLISION_NONE) {
+					CopyPieceToGrid(debr);
+					touches = true;
+				}
 			}
 		}
-		if (collide_wit_debris(shapes.front(), debr, 0, 0) != COLLISION_NONE) {
+		else {
+			explodes = true;
+		}
+		
+		if (!touches && !explodes && (collide_wit_debris(shapes.front(), debr, 0, 0) != COLLISION_NONE))
+			explodes = true;
+		if(explodes)
 			explosions.push_back(debr);
-			touches = true;
-		}
-		if (touches) {
+		if (explodes || touches)
 			positions.push(pos - 1);
-		}
 	}
 
 	DeleteFromDeque(debris, positions);
