@@ -1,4 +1,5 @@
 #pragma once
+#include <memory> // std::unique_ptr
 
 // random generator
 extern void DebugWriteMsg(const std::wstring arg);

@@ -78,7 +78,8 @@ AllegroResources::AllegroResources(int afps)
 	scope_event_display(
 		[&]() { al_register_event_source(event_queue, al_get_display_event_source(display)); },
 		[&]() { al_unregister_event_source(event_queue, al_get_display_event_source(display)); }),
-	audio()
+	audio(),
+	sprite1("C:\\Users\\Anonymous User\\Desktop\\sprite1.png") // TODO Include the png as a resource in the binary, and extract it to a known path.
 {
 }
 

@@ -915,7 +915,7 @@ long TetrisPlayer::TestCollisionCurent()
 long TetrisPlayer::TestCollision(TetrisElement& elem)
 {
 	//std::string deb_colide;
-	TetrisElement& xxxx = elem;
+	//TetrisElement& xxxx = elem;
 	long colides = collide(elem, 0, 0);
 	if (colides != COLLISION_NONE) {
 		//deb_colide = "colide";

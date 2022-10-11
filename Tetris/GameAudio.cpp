@@ -13,7 +13,11 @@ GameAudio::GameAudio()
 #endif
 	resources(BasicResources::Instance()),
 	scope_sound([]() { al_reserve_samples(3); }), // TODO unreserve samples
+#ifdef LOOP_SOUND1
+	sound_theme1(IDR_TETRIS_MUSIC1, resources.wavname_theme1, ALLEGRO_PLAYMODE_LOOP),
+#else
 	sound_theme1(IDR_TETRIS_MUSIC1, resources.wavname_theme1),
+#endif
 	sound_theme2(IDR_TETRIS_MUSIC2, resources.wavname_theme2),
 	sound_theme3(IDR_TETRIS_MUSIC3, resources.wavname_theme3),
 	sound_theme4(IDR_TETRIS_MUSIC4, resources.wavname_theme4),
@@ -82,6 +86,9 @@ bool GameAudio::PlayTheme() {
 		return false;
 	if (++toggle > 9)
 		toggle = 1;
+#ifdef LOOP_SOUND1
+	toggle = 1;
+#endif
 	if (toggle == 1) PlayTheme1();
 	else if (toggle == 2) PlayTheme2();
 	else if (toggle == 3) PlayTheme3();

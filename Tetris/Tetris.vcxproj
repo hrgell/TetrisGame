@@ -108,6 +108,7 @@
     <Allegro_AddonColor>true</Allegro_AddonColor>
     <Allegro_AddonVideo>true</Allegro_AddonVideo>
     <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
+    <Allegro_AddonMemfile>true</Allegro_AddonMemfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -162,6 +163,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -184,6 +186,7 @@
     <ClInclude Include="AllegroFont.h" />
     <ClInclude Include="AllegroResources.h" />
     <ClInclude Include="AllegroSound.h" />
+    <ClInclude Include="AllegroSprite.h" />
     <ClInclude Include="BasicResources.h" />
     <ClInclude Include="FpsCounter.h" />
     <ClInclude Include="framework.h" />
@@ -209,6 +212,7 @@
     <ClCompile Include="AllegroFont.cpp" />
     <ClCompile Include="AllegroResources.cpp" />
     <ClCompile Include="AllegroSound.cpp" />
+    <ClCompile Include="AllegroSprite.cpp" />
     <ClCompile Include="BasicResources.cpp" />
     <ClCompile Include="FpsCounter.cpp" />
     <ClCompile Include="GameAudio.cpp" />

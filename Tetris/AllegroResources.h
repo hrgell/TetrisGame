@@ -4,6 +4,7 @@
 #include "GameAudio.h"
 #include "GameFonts.h"
 #include "Scope.h"
+#include "AllegroSprite.h"
 
 // We use RAII to manage the allegro resources.
 class AllegroResources
@@ -39,6 +40,7 @@ private:
 	Scope scope_event_display;
 public:
 	GameAudio audio;
+	AllegroSprite sprite1;
 	AllegroResources() = delete;
 	AllegroResources(int fps);
 	~AllegroResources();

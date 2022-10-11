@@ -40,6 +40,7 @@ public:
 	long timer_event(ALLEGRO_EVENT event);
 	//void recalc();
 	void RunGame();
+	inline bool RunEvent(ALLEGRO_EVENT& event);
 	void draw_unicode_char(char32_t ch, float dx = 0);
 	bool ProcessGlobalKey(ALLEGRO_EVENT &event);
 	bool SetWindowSize();

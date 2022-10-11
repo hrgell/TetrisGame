@@ -14,8 +14,8 @@ public:
 	Scope() = delete;
 	Scope(const Scope &) = delete;
 	Scope &operator=(const Scope &) = delete;
-	Scope(Scope &&);
-	Scope& operator=(Scope &&);
+	Scope(Scope &&) noexcept;
+	Scope& operator=(Scope &&) noexcept;
 	~Scope();
 	// Remove default constructors and assignment
 };

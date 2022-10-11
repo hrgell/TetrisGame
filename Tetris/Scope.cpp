@@ -56,14 +56,14 @@ Scope::Scope(function<void()> initializer)
 	initializer();
 }
 
-Scope::Scope(Scope &&scope) :
+Scope::Scope(Scope &&scope) noexcept :
 	initialized(std::move(scope.initialized)),
 	finalizer(std::move(scope.finalizer))
 {
 	scope.initialized = false;
 }
 
-Scope& Scope::operator=(Scope&& other) {
+Scope& Scope::operator=(Scope&& other) noexcept {
 	initialized = std::move(other.initialized);
 	finalizer = std::move(other.finalizer);
 	other.initialized = false;
