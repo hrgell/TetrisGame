@@ -11,6 +11,7 @@ class AllegroResources
 {
 public:
 	bool developing;
+	bool paused;
 	GameMonitor monitor;
 	int width;
 	int height;

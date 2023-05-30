@@ -58,6 +58,9 @@ TetrisGame::TetrisGame(AllegroResources &gb) :
 
 long TetrisGame::timer_event(ALLEGRO_EVENT event)
 {
+	bool do_grid = false;
+	bool do_frame = false;
+
 	// increase the tick count
 	++tick;
 	if (tick < 0) {
@@ -73,25 +76,25 @@ long TetrisGame::timer_event(ALLEGRO_EVENT event)
 	bool do_vert = fps_vert.Tick(tick);
 	bool do_keyb = fps_keyb.Tick(tick);
 	bool do_second = fps_second.Tick(tick);
-	bool do_grid = fps_grid.Tick(tick);
-	bool do_frame = fps_frame.Tick(tick);
+	do_grid = fps_grid.Tick(tick);
+	do_frame = fps_frame.Tick(tick);
 
-	// first debris
-	if (do_frame) {
-		player1.DropDebris();
-		player2.DropDebris();
+	if (!gb.paused) {
+		// first debris
+		if (do_frame) {
+			player1.DropDebris();
+			player2.DropDebris();
+		}
+
+		// then animation
+		player1.ProcessMovement(gb, fps_vert, do_horz, do_vert);
+		player2.ProcessMovement(gb, fps_vert, do_horz, do_vert);
 	}
-
-	// then animation
-	player1.ProcessMovement(gb, fps_vert, do_horz, do_vert);
-	player2.ProcessMovement(gb, fps_vert, do_horz, do_vert);
-
 	if (do_keyb) {
 	}
 
 	if (do_second) {
 	}
-
 	if (do_grid) {
 		//player1.RemoveSquareWhenGameIsOver();
 		//player2.RemoveSquareWhenGameIsOver();
@@ -103,10 +106,10 @@ long TetrisGame::timer_event(ALLEGRO_EVENT event)
 			player1.DrawFrame();
 			player2.DrawFrame();
 			//player1.DrawAllRotations(570, 70);
-			auto f5x = left + (numcols + 2) * gb.monitor.unitx + player1.indentx;
-			auto f5y = top - gb.monitor.unity * (player1.toprows + 3);
-			gb.fonts.header2.Draw(resources.color_white, f5x, f5y, ALLEGRO_ALIGN_CENTER, "Press F5 to Restart");
-			gb.fonts.small.Draw(resources.color_white, f5x, f5y + 22, ALLEGRO_ALIGN_CENTER, "Press M to toggle Music");
+			auto xpos = left + (numcols + 2) * gb.monitor.unitx + player1.indentx;
+			auto ypos = top - gb.monitor.unity * (player1.toprows + 3);
+			gb.fonts.header2.Draw(resources.color_white, xpos, ypos, ALLEGRO_ALIGN_CENTER, "Press F5 to Restart");
+			gb.fonts.small.Draw(resources.color_white, xpos, ypos + 22, ALLEGRO_ALIGN_CENTER, "Press M to toggle Music");
 			if (false) {
 				std::string rst = player1.ToString();
 				gb.fonts.header1.Draw(resources.color_white, gb.monitor.unitx * 30, gb.monitor.unity, ALLEGRO_ALIGN_LEFT, rst.c_str());
@@ -139,8 +142,8 @@ long TetrisGame::timer_event(ALLEGRO_EVENT event)
 		}
 		// Show the frame
 		DisplayFrame();
-
 	}
+	
 	return 0;
 } // method
 
@@ -174,9 +177,13 @@ bool TetrisGame::ProcessGlobalKey(ALLEGRO_EVENT &event) {
 		gb.audio.ToggleMusic();
 	}
 	else if (event.keyboard.keycode == ALLEGRO_KEY_F5) {
+		gb.paused = false;
 		player1.Restart();
 		player2.Restart();
 		fps_vert.ReInitialize(80);
+	}
+	else if (event.keyboard.keycode == ALLEGRO_KEY_F6) {
+		gb.paused = !gb.paused;
 	}
 	else if (event.keyboard.keycode == ALLEGRO_KEY_F3) {
 		gb.developing = !gb.developing;
@@ -218,66 +225,71 @@ inline bool TetrisGame::RunEvent(ALLEGRO_EVENT& event)
 	//al_get_keyboard_state(&keyboard_state);
 	if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 		return false;
-	if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
-		//char buf[100];
-		//snprintf(buf, sizeof(buf), "mouse %u", event.mouse.button);
-		//const char *msg = buf;
-		//al_show_native_message_box(nullptr, "MOUSE", "MOUSE", msg, nullptr, ALLEGRO_MESSAGEBOX_ERROR);
-		auto val = event.mouse.button;
-		if (val == 1)
-			kbd1.KeyboardDown(kbd1.k_left.id);
-		else if (val == 2)
-			kbd1.KeyboardDown(kbd1.k_right.id);
-		else if (val == 4)
-			kbd1.KeyboardDown(kbd1.k_down.id);
-		else if (val == 5)
-			kbd1.KeyboardDown(kbd1.k_up.id);
-		return true;
-	}
-	if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
-		auto val = event.mouse.button;
-		if (val == 1)
-			kbd1.KeyboardUp(kbd1.k_left.id);
-		else if (val == 2)
-			kbd1.KeyboardUp(kbd1.k_right.id);
-		else if (val == 4)
-			kbd1.KeyboardUp(kbd1.k_down.id);
-		else if (val == 5)
-			kbd1.KeyboardUp(kbd1.k_up.id);
-		return true;
-	}
-	if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
-		auto b = event.mouse.button;
-		auto x = event.mouse.dx;
-		auto y = event.mouse.dy;
-		auto z = event.mouse.dz;
-		if (z != 0) {
-			if (z == 1) {
-				kbd1.KeyboardDown(kbd1.k_up.id);
-				kbd1.KeyboardUp(kbd1.k_up.id);
-			}
-			else { // if (z == -1) {
-				kbd1.KeyboardDown(kbd1.k_up.id);
-				kbd1.KeyboardUp(kbd1.k_up.id);
-				// TODO instead:
-				//  id = kbd1.k_down.id;
-				//  kbd1.KeyboardDown(id);
-				//  setTimeout(function delayed() { kbd1.KeyboardUp(id); }, 200);
-			}
-		}
-		return true;
-	}
 	if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
 		if (!ProcessGlobalKey(event))
 			return false;
-		kbd1.KeyboardDown(event.keyboard.keycode);
-		kbd2.KeyboardDown(event.keyboard.keycode);
-		return true;
 	}
-	if (event.type == ALLEGRO_EVENT_KEY_UP) {
-		kbd1.KeyboardUp(event.keyboard.keycode);
-		kbd2.KeyboardUp(event.keyboard.keycode);
-		return true;
+
+	if (!gb.paused) {
+		if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+			//char buf[100];
+			//snprintf(buf, sizeof(buf), "mouse %u", event.mouse.button);
+			//const char *msg = buf;
+			//al_show_native_message_box(nullptr, "MOUSE", "MOUSE", msg, nullptr, ALLEGRO_MESSAGEBOX_ERROR);
+			auto val = event.mouse.button;
+			if (val == 1)
+				kbd1.KeyboardDown(kbd1.k_left.id);
+			else if (val == 2)
+				kbd1.KeyboardDown(kbd1.k_right.id);
+			else if (val == 4)
+				kbd1.KeyboardDown(kbd1.k_down.id);
+			else if (val == 5)
+				kbd1.KeyboardDown(kbd1.k_up.id);
+			return true;
+		}
+		if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
+			auto val = event.mouse.button;
+			if (val == 1)
+				kbd1.KeyboardUp(kbd1.k_left.id);
+			else if (val == 2)
+				kbd1.KeyboardUp(kbd1.k_right.id);
+			else if (val == 4)
+				kbd1.KeyboardUp(kbd1.k_down.id);
+			else if (val == 5)
+				kbd1.KeyboardUp(kbd1.k_up.id);
+			return true;
+		}
+		if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+			auto b = event.mouse.button;
+			auto x = event.mouse.dx;
+			auto y = event.mouse.dy;
+			auto z = event.mouse.dz;
+			if (z != 0) {
+				if (z == 1) {
+					kbd1.KeyboardDown(kbd1.k_up.id);
+					kbd1.KeyboardUp(kbd1.k_up.id);
+				}
+				else { // if (z == -1) {
+					kbd1.KeyboardDown(kbd1.k_up.id);
+					kbd1.KeyboardUp(kbd1.k_up.id);
+					// TODO instead:
+					//  id = kbd1.k_down.id;
+					//  kbd1.KeyboardDown(id);
+					//  setTimeout(function delayed() { kbd1.KeyboardUp(id); }, 200);
+				}
+			}
+			return true;
+		}
+		if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+			kbd1.KeyboardDown(event.keyboard.keycode);
+			kbd2.KeyboardDown(event.keyboard.keycode);
+			return true;
+		}
+		if (event.type == ALLEGRO_EVENT_KEY_UP) {
+			kbd1.KeyboardUp(event.keyboard.keycode);
+			kbd2.KeyboardUp(event.keyboard.keycode);
+			return true;
+		}
 	}
 	if (event.type == ALLEGRO_EVENT_TIMER) {
 		if (al_is_event_queue_empty(gb.event_queue)) {

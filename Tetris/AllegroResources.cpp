@@ -6,6 +6,7 @@ using namespace std;
 AllegroResources::AllegroResources(int afps)
 	:
 	developing(false),
+	paused(false),
 	monitor(),
 	scope_base(
 		[]() { return al_init(); },

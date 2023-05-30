@@ -192,6 +192,8 @@ void TetrisPlayer::DrawText()
 	gb.fonts.fixed.Draw(resources.color_white, left + indentx + unitx * numcols / 2, bottom + unity * 2, ALLEGRO_ALIGN_CENTER, txt.c_str());
 	if (!playing)
 		gb.fonts.header1.Draw(resources.color_white, left + indentx + unitx * numcols / 2, top + unity * numrows / 2, ALLEGRO_ALIGN_CENTER, replay_text);
+	else if(gb.paused)
+		gb.fonts.header1.Draw(resources.color_white, left + indentx + unitx * numcols / 2, top + unity * numrows / 2, ALLEGRO_ALIGN_CENTER, "PAUSED");
 }
 
 bool TetrisPlayer::DrawGrid() {
